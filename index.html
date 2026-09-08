@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Rwein Ride">
+    
+    
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary: #25D366;
+            --dark: #121212;
+            --light: #F4F4F9;
+            --accent: #075E54;
+            --gray: #666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color:#0CA9F8;
+            color: #333;
+            padding-bottom: 90px; /* Space reserved so content isn't covered by the floating contact bar */
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 5%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            width:230px;
+            height:35px;
+            background-color:#0CA9F8;
+            padding-left:10px;
+            border-top-right-radius:40px;
+          	
+            font-style:italic;
+          
+        }
+
+        /* Search Bar Style */
+        .search-container {
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .cart-icon-container {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.8rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: red;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-bump {
+            transform: scale(1.3);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px 5%;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+            color: var(--gray);
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .product-code {
+            font-size: 0.75rem;
+            color: red;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            margin: 2px 0 5px;
+            font-weight: 600;
+        }
+
+        .product-price {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 6px;
+            font-size: 0.85rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .add-to-cart-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--accent);
+        }
+
+        /* Cart View Modal */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: flex-end;
+        }
+
+        .cart-modal.open {
+            display: flex;
+        }
+
+        .cart-content {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-code {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-weight: bold;
+        }
+
+        .cart-item-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-note {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quantity-controls button {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ccc;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+
+        .checkout-section {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .price-summary {
+            margin-bottom: 15px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .price-row.total {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--accent);
+            border-top: 1px dashed #ccc;
+            padding-top: 5px;
+        }
+
+        .customer-form input, .customer-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .order-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Fixed Floating Contact Bar */
+        .contact-section-floating {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 10px 15px;
+            border-radius: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #eee;
+        }
+
+        .contact-section-floating h4 {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+        }
+
+        .contact-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .email-btn {
+            background-color: #EA4335;
+        }
+
+        .messenger-btn {
+            background-color: #0084FF;
+        }
+
+        /* Thank You Popup */
+        .popup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 350px;
+        }
+
+        .popup-content h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .popup-content button {
+            margin-top: 15px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Rwein Shop </div>
+        
+        <!-- Search Input Bar -->
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search by product name or code..." onkeyup="filterProducts()">
+        </div>
+
+        <div class="cart-icon-container" onclick="toggleCart()">
+            🛒
+            <span class="cart-badge" id="cartBadge">0</span>
+        </div>
+    </header>
+
+    <div class="products-grid" id="productsGrid"></div>
+
+    <!-- Floating Sticky Contact Us Bar -->
+    <div class="contact-section-floating">
+        <h4>Contact Us:</h4>
+        <div class="contact-links">
+            <a href="mailto:mdruhu2018@gmail.com" class="contact-btn email-btn">
+                ✉️ Email
+            </a>
+            <a href="https://m.me/mdruhu.2018" target="_blank" class="contact-btn messenger-btn">
+                💬 Messenger
+            </a>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2>Your Shopping Cart</h2>
+                <button class="close-btn" onclick="toggleCart()">&times;</button>
+            </div>
+            
+            <div id="cartItemsContainer"></div>
+
+            <div class="checkout-section">
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalAmount">0 BDT</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Delivery Charge:</span>
+                        <span>50 BDT</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total:</span>
+                        <span id="totalAmount">50 BDT</span>
+                    </div>
+                </div>
+
+                <form class="customer-form" id="checkoutForm" onsubmit="sendOrder(event)">
+                    <h4>Customer Details</h4>
+                    <input type="text" id="custName" placeholder="Full Name" required>
+                    <input type="tel" id="custPhone" placeholder="Phone Number" required>
+                    <textarea id="custAddress" placeholder="Delivery Address" rows="3" required></textarea>
+                    <button type="submit" class="order-btn">Submit Order via WhatsApp</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thank You Popup -->
+    <div class="popup-modal" id="thankYouPopup">
+        <div class="popup-content">
+            <h3>Thank You For Your Order!</h3>
+            <p>We will respond as soon as possible.</p>
+            <button onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const WHATSAPP_NUMBER = "966530725809";
+        const DELIVERY_CHARGE = 50;
+        let cart = [];
+
+        // Manual or Sample Product Array
+        const products = [
+            {
+                id: 1,
+                code: "P-101",
+                name: "Men's Black Cotton T-Shirt,This is The Last Moment  of in my World",
+                price: 350,
+                image: "https://i.ibb.co/example/shirt.jpg"
+            },
+            {
+                id: 2,
+                code: "P-102",
+                name: "Blue Denim Jeans",
+                price: 850,
+                image: "https://i.ibb.co/example/jeans.jpg"
+            },
+            {
+                id: 3,
+                code: "P-103",
+                name: "Leather Wallet",
+                price: 450,
+                image: "https://i.ibb.co/example/wallet.jpg"
+            }
+        ];
+
+        // Render Products
+        function renderProducts(itemsToRender = products) {
+            const grid = document.getElementById('productsGrid');
+            
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = `<div class="no-results">No products found matching your search.</div>`;
+                return;
+            }
+
+            grid.innerHTML = itemsToRender.map(product => `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-code">Code: ${product.code}</div>
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-price">${product.price} BDT</div>
+                    <input type="text" class="note-input" id="note-${product.id}" placeholder="Note (Size, Color, etc.)">
+                    <button class="add-to-cart-btn" onclick="addToCart(${product.id})">Add to Cart</button>
+                </div>
+            `).join('');
+        }
+
+        // Search/Filter Products Function
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filtered = products.filter(product => 
+                product.name.toLowerCase().includes(query) || 
+                product.code.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        }
+
+        // Add to Cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const noteInput = document.getElementById(`note-${productId}`);
+            const note = noteInput ? noteInput.value.trim() : '';
+
+            const existingIndex = cart.findIndex(item => item.id === productId && item.note === note);
+
+            if (existingIndex > -1) {
+                cart[existingIndex].qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1, note: note });
+            }
+
+            if (noteInput) noteInput.value = ''; 
+            updateCartUI();
+            animateCartIcon();
+        }
+
+        // Cart Icon Animation
+        function animateCartIcon() {
+            const badge = document.getElementById('cartBadge');
+            badge.classList.add('cart-bump');
+            setTimeout(() => badge.classList.remove('cart-bump'), 200);
+        }
+
+        // Update Cart UI & Calculations
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').innerText = totalItems;
+
+            const container = document.getElementById('cartItemsContainer');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding: 20px;">Your cart is empty.</p>';
+                document.getElementById('subtotalAmount').innerText = '0 BDT';
+                document.getElementById('totalAmount').innerText = '0 BDT';
+                return;
+            }
+
+            let subtotal = 0;
+            container.innerHTML = cart.map((item, index) => {
+                const itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                return `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-code">Code: ${item.code}</div>
+                            <div class="cart-item-title">${item.name}</div>
+                            ${item.note ? `<div class="cart-item-note">Note: ${item.note}</div>` : ''}
+                            <div>${item.price} BDT × ${item.qty} = ${itemTotal} BDT</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button onclick="changeQty(${index}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button onclick="changeQty(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const finalTotal = subtotal + (cart.length > 0 ? DELIVERY_CHARGE : 0);
+            document.getElementById('subtotalAmount').innerText = `${subtotal} BDT`;
+            document.getElementById('totalAmount').innerText = `${finalTotal} BDT`;
+        }
+
+        // Quantity Modifier
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        // Toggle Cart View
+        function toggleCart() {
+            document.getElementById('cartModal').classList.toggle('open');
+        }
+
+        // Send Order via WhatsApp
+        function sendOrder(event) {
+            event.preventDefault();
+
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value;
+
+            let subtotal = 0;
+            let message = `*NEW ORDER RECEIVED*\n\n`;
+            message += `*Customer Details:*\n`;
+            message += `• Name: ${name}\n`;
+            message += `• Phone: ${phone}\n`;
+            message += `• Address: ${address}\n\n`;
+            message += `*Order Items:*\n`;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                message += `${index + 1}. [${item.code}] ${item.name} (x${item.qty}) - ${itemTotal} BDT\n`;
+                if (item.note) message += `   Note: ${item.note}\n`;
+            });
+
+            const grandTotal = subtotal + DELIVERY_CHARGE;
+
+            message += `\n*Subtotal:* ${subtotal} BDT`;
+            message += `\n*Delivery Charge:* ${DELIVERY_CHARGE} BDT`;
+            message += `\n*Grand Total:* ${grandTotal} BDT`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedMessage}`;
+
+            try {
+                window.location.href = whatsappUrl;
+            } catch(e) {
+                window.open(whatsappUrl, '_blank');
+            }
+
+            // Reset Cart & UI
+            cart = [];
+            document.getElementById('checkoutForm').reset();
+            updateCartUI();
+            toggleCart();
+
+            // Display Thank You Popup
+            document.getElementById('thankYouPopup').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('thankYouPopup').style.display = 'none';
+        }
+
+        // Initialize page
+        renderProducts();
+    </script>
+</body>
+</html>
