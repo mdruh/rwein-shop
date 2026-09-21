@@ -1010,28 +1010,33 @@
     };
 
     window.handleLogin = async function (e) {
-        e.preventDefault();
-        if (!auth) return alert("Firebase is not configured correctly.");
+    e.preventDefault();
+    if (!auth) return alert("Rwein.Store is not configured correctly.");
 
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
 
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-            if (!user.emailVerified) {
-                alert("Your email address is not verified yet. Please check your inbox for the verification link.");
-                await signOut(auth);
-                return;
+        if (!user.emailVerified) {
+            // Ask user if they want to resend the verification email
+            const resend = confirm("Your email address is not verified yet. Please check your Inbox and Spam folder.\n\nWould you like us to send the verification link again?");
+            if (resend) {
+                await sendEmailVerification(user);
+                alert("A new verification link has been sent to " + email + ". Please check your spam folder if it doesn't appear in your inbox.");
             }
-
-            alert("Logged in successfully!");
-            closeAuthModal();
-        } catch (error) {
-            alert("Login Error: " + error.message);
+            await signOut(auth);
+            return;
         }
-    };
+
+        alert("Logged in successfully!");
+        closeAuthModal();
+    } catch (error) {
+        alert("Login Error: " + error.message);
+    }
+};
 
     window.handleLogout = async function () {
         if (auth) {
