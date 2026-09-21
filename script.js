@@ -10,13 +10,16 @@
 
     // FIXME: Replace with your actual Firebase Project Configuration Object
     const firebaseConfig = {
-        apiKey: "YOUR_FIREBASE_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
+  apiKey: "AIzaSyAODsM04fG95nIniGu1uhXzNukEnNL_OMM",
+  authDomain: "rwein-store.firebaseapp.com",
+  databaseURL: "https://rwein-store-default-rtdb.firebaseio.com",
+  projectId: "rwein-store",
+  storageBucket: "rwein-store.firebasestorage.app",
+  messagingSenderId: "1047274378784",
+  appId: "1:1047274378784:web:1c62876508ee439016ce45",
+  measurementId: "G-9MNQYQSB0J"
+};
+
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
