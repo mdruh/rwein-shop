@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rwein Shop - Online Shop</title>
+    <title>Rwein,রিওয়াইন অনলাইন স্টোর</title>
     <meta name="mobile-web-app-capable" content="Rwein Store">
     <meta name="apple-mobile-web-app-capable" content="Rwein Store">
     <meta name="apple-mobile-web-app-title" content="Rwein Store">
@@ -305,6 +305,16 @@
             border-radius: 4px;
         }
 
+        .free-delivery-badge {
+            background: #2a9d8f;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
         .note-input {
             width: 100%;
             padding: 8px;
@@ -543,6 +553,38 @@
             border-top: 2px solid #eee;
         }
 
+        .coupon-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .coupon-input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .coupon-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .coupon-msg {
+            font-size: 0.8rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
         .price-summary {
             margin-bottom: 15px;
         }
@@ -674,7 +716,7 @@
     <!-- Top Bar with Logo & Auth -->
     <div class="top-banner">
         <div class="logo-container">
-            <div class="logo-text">Rwein Store</div>
+            <div class="logo-text">Rwein.Store</div>
             <div class="water-drop drop-1"></div>
             <div class="water-drop drop-2"></div>
             <div class="water-drop drop-3"></div>
@@ -701,10 +743,10 @@
     <!-- Category Filter Bar -->
     <div class="category-bar">
         <button class="category-btn active" onclick="filterByCategory('All', this)">All</button>
-        <button class="category-btn" onclick="filterByCategory('Accessories', this)">Accessories</button>
         <button class="category-btn" onclick="filterByCategory('Man', this)">Man</button>
         <button class="category-btn" onclick="filterByCategory('Woman', this)">Woman</button>
-        <button class="category-btn" onclick="filterByCategory('Another', this)">Another</button>
+        <button class="category-btn" onclick="filterByCategory('Home', this)">Home & Living</button>
+        <button class="category-btn" onclick="filterByCategory('Accessories', this)">Accessories</button>
     </div>
 
     <!-- Product Grid -->
@@ -730,6 +772,7 @@
         <div id="detailCode" class="detail-code"></div>
         <div id="detailTitle" class="detail-title"></div>
         <div id="detailPrice" class="detail-price"></div>
+        <div id="detailFreeShippingTag"></div>
         <div id="detailDescription" class="detail-description" style="font-size: 0.9rem; color: #555; line-height: 1.4; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;"></div>
         <input type="text" class="note-input" id="detailNoteInput" placeholder="Note (Size, Color, etc.)">
         <button class="add-to-cart-btn" id="detailAddToCartBtn" style="width: 100%; padding: 12px;">Add to Cart</button>
@@ -789,14 +832,25 @@
         </div>
         <div id="cartItemsContainer"></div>
         <div class="checkout-section">
+            <!-- Coupon / Discount Code Section -->
+            <div class="coupon-section">
+                <input type="text" id="couponInput" class="coupon-input" placeholder="Enter coupon code">
+                <button type="button" class="coupon-btn" onclick="applyCoupon()">Apply</button>
+            </div>
+            <div id="couponMessage" class="coupon-msg"></div>
+
             <div class="price-summary">
                 <div class="price-row">
                     <span>Subtotal:</span>
                     <span id="subtotalAmount">0 BDT</span>
                 </div>
+                <div class="price-row" id="discountRow" style="display: none; color: #e63946;">
+                    <span>Discount (<span id="discountPercentageText">0</span>%):</span>
+                    <span id="discountAmount">-0 BDT</span>
+                </div>
                 <div class="price-row">
                     <span>Delivery Charge:</span>
-                    <span>25 BDT</span>
+                    <span id="deliveryAmount">25 BDT</span>
                 </div>
                 <div class="price-row total">
                     <span>Total:</span>
@@ -842,19 +896,17 @@
         getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  /*
     // Firebase Config
     const firebaseConfig = {
-  apiKey: "AIzaSyAODsM04fG95nIniGu1uhXzNukEnNL_OMM",
-  authDomain: "rwein-store.firebaseapp.com",
-  databaseURL: "https://rwein-store-default-rtdb.firebaseio.com",
-  projectId: "rwein-store",
-  storageBucket: "rwein-store.firebasestorage.app",
-  messagingSenderId: "1047274378784",
-  appId: "1:1047274378784:web:1c62876508ee439016ce45",
-  measurementId: "G-9MNQYQSB0J"
-};
-*/
+        apiKey: "YOUR_ACTUAL_FIREBASE_API_KEY",
+        authDomain: "rwein-store.firebaseapp.com",
+        projectId: "rwein-store",
+        storageBucket: "rwein-store.firebasestorage.app",
+        messagingSenderId: "1047274378784",
+        appId: "YOUR_ACTUAL_FIREBASE_APP_ID",
+        measurementId: "G-9MNQYQSB0J"
+    };
+
     let auth, db;
     try {
         const app = initializeApp(firebaseConfig);
@@ -866,87 +918,98 @@
 
     // Global Store Variables
     const WHATSAPP_NUMBER = "966530725809";
-    const DELIVERY_CHARGE = 25;
+    const BASE_DELIVERY_CHARGE = 25;
     let cart = [];
     let currentCategory = 'All';
+    
+    // Active Coupon State
+    let activeCoupon = null; // Can be { code: 'RWEINRC', type: 'percent', value: 10 } or { code: 'RWEINSC', type: 'free_delivery' }
 
     const products = [
+        
         {
-            id: 1,
-            code: "P-101",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            category: "Woman",
-            images: ["s001.jpg", "u001.jpg", "b001.jpg"],
-            image: "rwein1.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        id: 1,
+        code: "P-101",
+        name: "Pure Cotton Fabric Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: true,
+        category: "Woman",
+        images: ["s001.jpg", "u001.jpg", "b001.jpg"],
+        image: "rwein1.jpg",
+        description: "Comfort and Quality: The Cotton Fabric You Deserve."
         },
         {
-            id: 2,
-            code: "P-102",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            category: "Woman",
-            images: ["s002.jpg", "u002.jpg", "b002.jpg"],
-            image: "rwein2.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        id: 2,
+        code: "P-102",
+        name: "Wide Strap Goddy",
+        price: 99,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s002.jpg", "u002.jpg", "b002.jpg"],
+        image: "rwein2.jpg",
+        description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
         },
         {
-            id: 3,
-            code: "P-103",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            category: "Woman",
-            images: ["s003.jpg","u003.jpg","b003.jpg"],
-            image: "rwein3.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        id: 3,
+        code: "P-103",
+        name: "Indian Copy Stitch Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s003.jpg","u003.jpg","b003.jpg"],
+        image: "rwein3.jpg",
+        description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
         },
         {
-            id: 4,
-            code: "P-104",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            category: "Woman",
-            images: ["s004.jpg", "u004.jpg", "b004.jpg"],
-            image: "rwein4.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
+        id: 4,
+        code: "P-104",
+        name: "Women's Handbag",
+        price: 950,
+        discount: 10,
+        freeDelivery: false,
+        category: "Home",
+        images: ["s004.jpg", "u004.jpg", "b004.jpg"],
+        image: "rwein4.jpg",
+        description: "Elegant women's handbag with spacious compartments and premium finish."
         },
         {
-            id: 5,
-            code: "P-105",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            category: "Accessories",
-            images: ["s005.jpg", "u005.jpg", "b005.jpg"],
-            image: "rwein5.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
+        id: 5,
+        code: "P-105",
+        name: "Smart Watch Strap",
+        price: 250,
+        discount: 5,
+        freeDelivery: false,
+        category: "Accessories",
+        images: ["s005.jpg", "u005.jpg", "b005.jpg"],
+        image: "rwein5.jpg",
+        description: "Durable silicone replacement strap for smartwatches."
         },
         {
-            id: 6,
-            code: "P-106",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            category: "Another",
-            images: ["s006.jpg", "u006.jpg", "b006.jpg"],
-            image: "rwein6.jpg",
-            description: "Cute decorative night light lamp for rooms."
+        id: 6,
+        code: "P-106",
+        name: "Unicorn LED Lamp",
+        price: 600,
+        discount: 100,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s006.jpg", "u006.jpg", "b006.jpg"],
+        image: "rwein6.jpg",
+        description: "Cute decorative night light lamp for rooms."
         },
         {
-            id: 7,
-            code: "P-107",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            category: "Another",
-            images: ["s007.jpg", "u007.jpg", "b007.jpg"],
-            image: "rwein7.jpg",
-            description: "Cute decorative night light lamp for rooms."
+        id: 7,
+        code: "P-107",
+        name: "Unicorn LED Lamp",
+        price: 100,
+        discount: 1,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s007.jpg", "u007.jpg", "b007.jpg"],
+        image: "rwein7.jpg",
+        description: "Cute decorative night light lamp for rooms."
         },
         {
         id: 8,
@@ -954,6 +1017,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s008.jpg","u008.jpg","b008.jpg"],
         image: "rwein8.jpg",
@@ -965,6 +1029,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s009.jpg","u009.jpg","b009.jpg"],
         image: "rwein9.jpg",
@@ -976,6 +1041,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s010.jpg","u010.jpg","b010.jpg"],
         image: "rwein10.jpg",
@@ -987,6 +1053,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s011.jpg", "u011.jpg", "b011.jpg"],
         image: "rwein11.jpg",
@@ -998,6 +1065,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s012.jpg", "u012.jpg", "b012.jpg"],
         image: "rwein12.jpg",
@@ -1009,6 +1077,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s013.jpg", "u013.jpg", "b013.jpg"],
         image: "rwein13.jpg",
@@ -1020,6 +1089,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s014.jpg", "u014.jpg", "b014.jpg"],
         image: "rwein14.jpg",
@@ -1031,6 +1101,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s015.jpg","u015.jpg","b015.jpg"],
         image: "rwein15.jpg",
@@ -1042,6 +1113,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s016.jpg","u016.jpg","b016.jpg"],
         image: "rwein16.jpg",
@@ -1053,6 +1125,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s017.jpg","u017.jpg","b017.jpg"],
         image: "rwein17.jpg",
@@ -1064,6 +1137,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s018.jpg", "u018.jpg", "b018.jpg"],
         image: "rwein18.jpg",
@@ -1075,6 +1149,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s019.jpg", "u019.jpg", "b019.jpg"],
         image: "rwein19.jpg",
@@ -1086,6 +1161,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s020.jpg", "u020.jpg", "b020.jpg"],
         image: "rwein20.jpg",
@@ -1097,6 +1173,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["a021.jpg", "u021.jpg", "b021.jpg"],
         image: "rwein21.jpg",
@@ -1108,6 +1185,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s022.jpg","u022.jpg","b022.jpg"],
         image: "rwein22.jpg",
@@ -1119,6 +1197,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s023.jpg","u023.jpg","b023.jpg"],
         image: "rwein23.jpg",
@@ -1130,6 +1209,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s024.jpg","u024.jpg","b024.jpg"],
         image: "rwein24.jpg",
@@ -1141,6 +1221,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s025.jpg", "u025.jpg", "b025.jpg"],
         image: "rwein25.jpg",
@@ -1152,6 +1233,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s026.jpg", "u026.jpg", "b026.jpg"],
         image: "rwein5.jpg",
@@ -1163,6 +1245,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s027.jpg", "u027.jpg", "b027.jpg"],
         image: "rwein27.jpg",
@@ -1174,6 +1257,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s028.jpg", "u028.jpg", "b028.jpg"],
         image: "rwein28.jpg",
@@ -1185,6 +1269,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s029.jpg","u029.jpg","b029.jpg"],
         image: "rwein29.jpg",
@@ -1196,6 +1281,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s030.jpg","u030.jpg","b030.jpg"],
         image: "rwein30.jpg",
@@ -1207,6 +1293,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s031.jpg","s031.jpg","b031.jpg"],
         image: "rwein31.jpg",
@@ -1218,6 +1305,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s032.jpg", "u032.jpg", "b032.jpg"],
         image: "rwein32.jpg",
@@ -1229,6 +1317,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s033.jpg", "u033.jpg", "b033.jpg"],
         image: "rwein33.jpg",
@@ -1240,6 +1329,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s034.jpg", "u034.jpg", "b034.jpg"],
         image: "rwein34.jpg",
@@ -1251,6 +1341,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s035.jpg", "u035.jpg", "b035.jpg"],
         image: "rwein35.jpg",
@@ -1262,6 +1353,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s036.jpg","u036.jpg", "b036.jpg"],
         image: "rwein36.jpg",
@@ -1273,6 +1365,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s037.jpg","u037.jpg", "b037.jpg"],
         image: "rwein37.jpg",
@@ -1284,6 +1377,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s038.jpg","u038.jpg", "b038.jpg"],
         image: "rwein38.jpg",
@@ -1295,6 +1389,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s039.jpg", "u039.jpg", "b039.jpg"],
         image: "rwein39.jpg",
@@ -1306,6 +1401,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s040.jpg", "u040.jpg", "b040.jpg"],
         image: "rwein40.jpg",
@@ -1317,6 +1413,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s041.jpg", "u041.jpg", "b041.jpg"],
         image: "rwein41.jpg",
@@ -1328,6 +1425,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s042.jpg", "u042.jpg", "b042.jpg"],
         image: "rwein42.jpg",
@@ -1339,6 +1437,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s043.jpg","u043.jpg", "b043.jpg"],
         image: "rwein43.jpg",
@@ -1350,6 +1449,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s044.jpg","u044.jpg", "b044.jpg"],
         image: "rwein44.jpg",
@@ -1361,6 +1461,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s045.jpg","u045.jpg", "b045.jpg"],
         image: "rwein45.jpg",
@@ -1372,6 +1473,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s046.jpg", "s046.jpg", "s046.jpg"],
         image: "rwein46.jpg",
@@ -1383,6 +1485,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s047.jpg", "u047.jpg", "b047.jpg"],
         image: "rwein47.jpg",
@@ -1394,6 +1497,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s048.jpg", "u048.jpg", "b048.jpg"],
         image: "rwein48.jpg",
@@ -1405,6 +1509,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s050.jpg", "u050.jpg", "b050.jpg"],
         image: "rwein50.jpg",
@@ -1416,6 +1521,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s051.jpg","u051.jpg", "b051.jpg"],
         image: "rwein51.jpg",
@@ -1427,6 +1533,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s052.jpg","u052.jpg", "b052.jpg"],
         image: "rwein52.jpg",
@@ -1438,6 +1545,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s053.jpg","u053.jpg", "b053.jpg"],
         image: "rwein53.jpg",
@@ -1449,6 +1557,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s054.jpg", "u054.jpg", "b054.jpg"],
         image: "rwein54.jpg",
@@ -1460,6 +1569,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s055.jpg", "u055.jpg", "b055.jpg"],
         image: "rwein55.jpg",
@@ -1471,6 +1581,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s056.jpg", "u056.jpg", "b056.jpg"],
         image: "rwein56.jpg",
@@ -1482,6 +1593,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s057.jpg", "u057.jpg", "b057.jpg"],
         image: "rwein57.jpg",
@@ -1493,6 +1605,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s058.jpg","u058.jpg", "b058.jpg"],
         image: "rwein58.jpg",
@@ -1504,6 +1617,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s059.jpg","u059.jpg", "b059.jpg"],
         image: "rwein59sx.jpg",
@@ -1515,6 +1629,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s060.jpg","u060.jpg", "b060.jpg"],
         image: "rwein60.jpg",
@@ -1526,6 +1641,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s061.jpg", "u061.jpg", "b061.jpg"],
         image: "rwein61.jpg",
@@ -1537,6 +1653,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s062.jpg", "u062.jpg", "b062.jpg"],
         image: "rwein62.jpg",
@@ -1548,6 +1665,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s063.jpg", "u063.jpg", "b063.jpg"],
         image: "rwein63.jpg",
@@ -1559,6 +1677,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s064.jpg", "u064.jpg", "b064.jpg"],
         image: "rwein64.jpg",
@@ -1570,6 +1689,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s065.jpg","u065.jpg", "b065.jpg"],
         image: "rwein65.jpg",
@@ -1581,6 +1701,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s066.jpg","u066.jpg", "b066.jpg"],
         image: "rwein66.jpg",
@@ -1592,6 +1713,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s066.jpg","u067.jpg", "b067.jpg"],
         image: "rwein66.jpg",
@@ -1603,6 +1725,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s068.jpg", "u068.jpg", "b068.jpg"],
         image: "rwein68.jpg",
@@ -1614,6 +1737,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s068.jpg", "u068.jpg", "b068.jpg"],
         image: "rwein68.jpg",
@@ -1625,6 +1749,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s069.jpg", "u069.jpg", "b069.jpg"],
         image: "rwein69.jpg",
@@ -1635,7 +1760,7 @@
         code: "P-170",
         name: "Unicorn LED Lamp",
         price: 100,
-        discount: 1,
+        discount: 1,freeDelivery: false,
         category: "Another",
         images: ["s070.jpg", "u070.jpg", "b070.jpg"],
         image: "rwein70.jpg",
@@ -1647,6 +1772,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s071.jpg","u071.jpg","b071.jpg"],
         image: "rwein71.jpg",
@@ -1658,6 +1784,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s072.jpg","u072.jpg", "b072.jpg"],
         image: "rwein72.jpg",
@@ -1669,6 +1796,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s073.jpg","u073.jpg", "b073.jpg"],
         image: "rwein73.jpg",
@@ -1680,6 +1808,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s074.jpg", "u074.jpg", "b074.jpg"],
         image: "rwein74.jpg",
@@ -1691,6 +1820,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s075.jpg", "u075.jpg", "b075.jpg"],
         image: "rwein75.jpg",
@@ -1702,6 +1832,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s076.jpg", "u076.jpg", "b076.jpg"],
         image: "rwein76.jpg",
@@ -1713,6 +1844,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["rwe.jpg", "rwein1.jpg", "rwein2.jpg"],
         image: "rwein6.jpg",
@@ -1724,6 +1856,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s078.jpg","u078.jpg", "b078.jpg"],
         image: "rwein78.jpg",
@@ -1735,6 +1868,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s079.jpg","u079.jpg","b079.jpg"],
         image: "rwein79.jpg",
@@ -1746,6 +1880,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s080.jpg","u080.jpg","b080.jpg"],
         image: "rwein89.jpg",
@@ -1757,6 +1892,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s081.jpg", "u081.jpg", "b081.jpg"],
         image: "rwein81.jpg",
@@ -1768,6 +1904,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s082.jpg", "u082.jpg", "b082.jpg"],
         image: "rwein82.jpg",
@@ -1779,6 +1916,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s083.jpg", "u083.jpg", "b083.jpg"],
         image: "rwein83.jpg",
@@ -1790,6 +1928,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s084.jpg", "u084.jpg", "b084.jpg"],
         image: "rwein84.jpg",
@@ -1801,6 +1940,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s085.jpg","u085.jpg","b085.jpg"],
         image: "rwein85.jpg",
@@ -1812,6 +1952,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s086.jpg","u086.jpg","b086.jpg"],
         image: "rwein86.jpg",
@@ -1823,6 +1964,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s087.jpg","u087.jpg","b087.jpg"],
         image: "rwein87.jpg",
@@ -1834,6 +1976,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s088.jpg", "u088.jpg", "b088.jpg"],
         image: "rwein88.jpg",
@@ -1845,6 +1988,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s089.jpg", "u089.jpg", "b089.jpg"],
         image: "rwein88.jpg",
@@ -1856,6 +2000,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s090.jpg", "u090.jpg", "b090.jpg"],
         image: "rwein90.jpg",
@@ -1867,6 +2012,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s091.jpg", "u091.jpg", "b091.jpg"],
         image: "rwein91.jpg",
@@ -1878,6 +2024,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s092.jpg","u092.jpg","b092.jpg"],
         image: "rwein92.jpg",
@@ -1889,6 +2036,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s093.jpg","u093.jpg","b093.jpg"],
         image: "rwein93.jpg",
@@ -1900,6 +2048,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s094.jpg","u094.jpg","b094.jpg"],
         image: "rwein94.jpg",
@@ -1911,6 +2060,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s095.jpg", "u095.jpg", "b095.jpg"],
         image: "rwein95.jpg",
@@ -1922,6 +2072,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s096.jpg", "u096.jpg", "b096.jpg"],
         image: "rwein96.jpg",
@@ -1933,6 +2084,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s097.jpg", "u097.jpg", "b097.jpg"],
         image: "rwein97.jpg",
@@ -1944,6 +2096,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s097.jpg", "u098.jpg", "b098.jpg"],
         image: "rwein98.jpg",
@@ -1955,6 +2108,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s099.jpg","u099.jpg","b099.jpg"],
         image: "rwein99.jpg",
@@ -1966,6 +2120,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s100.jpg","u100.jpg","b100.jpg"],
         image: "rwein100.jpg",
@@ -1977,6 +2132,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s101.jpg","u101.jpg","b101.jpg"],
         image: "rwein101.jpg",
@@ -1988,6 +2144,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s102.jpg", "u102.jpg", "b102.jpg"],
         image: "rwein102.jpg",
@@ -1999,6 +2156,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s103.jpg", "u103.jpg", "b103.jpg"],
         image: "rwein103.jpg",
@@ -2010,6 +2168,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s104.jpg", "u104.jpg", "b104.jpg"],
         image: "rwein104.jpg",
@@ -2021,6 +2180,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s105.jpg", "u105.jpg", "b105.jpg"],
         image: "rwein105.jpg",
@@ -2032,6 +2192,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s106.jpg","u106.jpg", "b106.jpg"],
         image: "rwein106.jpg",
@@ -2043,6 +2204,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s107.jpg","u107.jpg", "b107.jpg"],
         image: "rwein107.jpg",
@@ -2054,6 +2216,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s108.jpg","u108.jpg", "b108.jpg"],
         image: "rwein108.jpg",
@@ -2065,6 +2228,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s109.jpg", "u109.jpg", "b108.jpg"],
         image: "rwein109.jpg",
@@ -2076,6 +2240,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s110.jpg", "u110.jpg", "b110.jpg"],
         image: "rwein110.jpg",
@@ -2087,6 +2252,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s111.jpg", "u111.jpg", "b111.jpg"],
         image: "rwein111.jpg",
@@ -2098,6 +2264,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s112.jpg", "u112.jpg", "b112.jpg"],
         image: "rwein112.jpg",
@@ -2109,6 +2276,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s113.jpg","u113.jpg", "b113.jpg"],
         image: "rwein113.jpg",
@@ -2120,6 +2288,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s114.jpg","u114.jpg", "b114.jpg"],
         image: "rwein114.jpg",
@@ -2131,6 +2300,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s115.jpg","u115.jpg", "b115.jpg"],
         image: "rwein115.jpg",
@@ -2142,6 +2312,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s116.jpg", "u116.jpg", "b116.jpg"],
         image: "rwein116.jpg",
@@ -2153,6 +2324,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s117.jpg", "u117.jpg", "b117.jpg"],
         image: "rwein117.jpg",
@@ -2164,6 +2336,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s118.jpg", "u118.jpg", "b118.jpg"],
         image: "rwein118.jpg",
@@ -2175,6 +2348,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s119.jpg", "u119.jpg", "b119.jpg"],
         image: "rwein119.jpg",
@@ -2186,6 +2360,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s120.jpg","u120.jpg", "b120.jpg"],
         image: "rwein120.jpg",
@@ -2197,6 +2372,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s121.jpg","u121.jpg", "b121.jpg"],
         image: "rwein121.jpg",
@@ -2208,6 +2384,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s122.jpg","u122.jpg", "b122.jpg"],
         image: "rwein122.jpg",
@@ -2219,6 +2396,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s123.jpg", "u123.jpg", "b123.jpg"],
         image: "rwein123.jpg",
@@ -2230,6 +2408,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s124.jpg", "u124.jpg", "b124.jpg"],
         image: "rwein5.jpg",
@@ -2241,6 +2420,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s125.jpg", "u125.jpg", "b125.jpg"],
         image: "rwein125.jpg",
@@ -2252,6 +2432,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s126.jpg", "u126.jpg", "b126.jpg"],
         image: "rwein126.jpg",
@@ -2263,6 +2444,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s127.jpg","u127.jpg", "b127.jpg"],
         image: "rwein127.jpg",
@@ -2274,6 +2456,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s128.jpg","u128.jpg", "b128.jpg"],
         image: "rwein128.jpg",
@@ -2285,6 +2468,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s129.jpg","u129.jpg", "b129.jpg"],
         image: "rwein129.jpg",
@@ -2296,6 +2480,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s130.jpg", "u120.jpg", "b130.jpg"],
         image: "rwein130.jpg",
@@ -2307,6 +2492,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s131.jpg", "u131.jpg", "b131.jpg"],
         image: "rwein131.jpg",
@@ -2318,6 +2504,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s132.jpg", "u132.jpg", "b132.jpg"],
         image: "rwein132.jpg",
@@ -2329,6 +2516,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s133.jpg", "u133.jpg", "b133.jpg"],
         image: "rwein133.jpg",
@@ -2340,6 +2528,7 @@
         name: "Pure Cotton Fabric Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s134.jpg","u134.jpg", "b134.jpg"],
         image: "rwein134.jpg",
@@ -2351,6 +2540,7 @@
         name: "Wide Strap Goddy",
         price: 99,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s135.jpg","u135.jpg", "b135.jpg"],
         image: "rwein135.jpg",
@@ -2362,6 +2552,7 @@
         name: "Indian Copy Stitch Bra",
         price: 110,
         discount: 0,
+        freeDelivery: false,
         category: "Woman",
         images: ["s136.jpg","u136.jpg", "b136.jpg"],
         image: "rwein136.jpg",
@@ -2373,6 +2564,7 @@
         name: "Women's Handbag",
         price: 950,
         discount: 10,
+        freeDelivery: false,
         category: "Woman",
         images: ["s137.jpg", "u137.jpg", "b137.jpg"],
         image: "rwein137.jpg",
@@ -2384,6 +2576,7 @@
         name: "Smart Watch Strap",
         price: 250,
         discount: 5,
+        freeDelivery: false,
         category: "Accessories",
         images: ["s138.jpg", "u138.jpg", "b138.jpg"],
         image: "rwein138.jpg",
@@ -2395,6 +2588,7 @@
         name: "Unicorn LED Lamp",
         price: 600,
         discount: 100,
+        freeDelivery: false,
         category: "Another",
         images: ["s139.jpg", "u139.jpg", "b139.jpg"],
         image: "rwein139.jpg",
@@ -2406,6 +2600,7 @@
         name: "Unicorn LED Lamp",
         price: 100,
         discount: 1,
+        freeDelivery: false,
         category: "Another",
         images: ["s140.jpg", "u140.jpg", "b140.jpg"],
         image: "rwein140.jpg",
@@ -2474,33 +2669,28 @@
     };
 
     window.handleLogin = async function (e) {
-    e.preventDefault();
-    if (!auth) return alert("Rwein.Store is not configured correctly.");
+        e.preventDefault();
+        if (!auth) return alert("Firebase is not configured correctly.");
 
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
 
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-        if (!user.emailVerified) {
-            // Ask user if they want to resend the verification email
-            const resend = confirm("Your email address is not verified yet. Please check your Inbox and Spam folder.\n\nWould you like us to send the verification link again?");
-            if (resend) {
-                await sendEmailVerification(user);
-                alert("A new verification link has been sent to " + email + ". Please check your spam folder if it doesn't appear in your inbox.");
+            if (!user.emailVerified) {
+                alert("Your email address is not verified yet. Please check your inbox for the verification link.");
+                await signOut(auth);
+                return;
             }
-            await signOut(auth);
-            return;
-        }
 
-        alert("Logged in successfully!");
-        closeAuthModal();
-    } catch (error) {
-        alert("Login Error: " + error.message);
-    }
-};
+            alert("Logged in successfully!");
+            closeAuthModal();
+        } catch (error) {
+            alert("Login Error: " + error.message);
+        }
+    };
 
     window.handleLogout = async function () {
         if (auth) {
@@ -2565,6 +2755,7 @@
                 <div class="product-card">
                     <img src="${product.image}" alt="${product.name}" onclick="openDetailModal(${product.id})">
                     <div class="product-code">Code: ${product.code}</div>
+                    ${product.freeDelivery ? `<span class="free-delivery-badge">🚚 Free Delivery Eligible</span>` : ''}
                     <div class="product-title" onclick="openDetailModal(${product.id})">${product.name}</div>
                     <div class="product-price">
                         ${hasDiscount ? `
@@ -2620,6 +2811,10 @@
         document.getElementById('detailPrice').innerHTML = hasDiscount ? 
             `<span class="original-price">${product.price} BDT</span> <span class="discounted-price">${finalPrice} BDT (-${product.discount}%)</span>` : 
             `${product.price} BDT`;
+        
+        document.getElementById('detailFreeShippingTag').innerHTML = product.freeDelivery ? 
+            `<div class="free-delivery-badge" style="margin-bottom: 10px;">🚚 Free Delivery Eligible</div>` : '';
+
         document.getElementById('detailDescription').innerText = product.description || "No full description available.";
         document.getElementById('detailNoteInput').value = '';
 
@@ -2690,6 +2885,34 @@
         setTimeout(() => badge.classList.remove('cart-bump'), 200);
     }
 
+    // Coupon System Validation Logic
+    window.applyCoupon = function () {
+        const codeInput = document.getElementById('couponInput').value.trim().toUpperCase();
+        const msgContainer = document.getElementById('couponMessage');
+
+        if (codeInput === "RWEINRC") {
+            activeCoupon = { code: 'RWEINRC', type: 'percent', value: 35 };
+            msgContainer.style.color = "#2a9d8f";
+            msgContainer.innerText = "✓ Coupon 'RWEINRC' applied successfully! (Thats For You)";
+        } else if (codeInput === "RWEINSD") {
+            activeCoupon = { code: 'RWEINSD', type: 'percent', value: 50 };
+            msgContainer.style.color = "#2a9d8f";
+            msgContainer.innerText = "✓ Coupon 'RWEINSD' applied successfully! (Thats For You)";
+        } else if (codeInput === "RWEINFD") {
+            activeCoupon = { code: 'RWEINFD', type: 'free_delivery' };
+            msgContainer.style.color = "#2a9d8f";
+            msgContainer.innerText = "✓ Coupon 'RWEINFD' applied successfully! (Free delivery for eligible products)";
+        } else if (codeInput === "") {
+            activeCoupon = null;
+            msgContainer.innerText = "";
+        } else {
+            activeCoupon = null;
+            msgContainer.style.color = "#e63946";
+            msgContainer.innerText = "✗ Invalid coupon code.";
+        }
+        updateCartUI();
+    };
+
     function updateCartUI() {
         const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
         document.getElementById('cartBadge').innerText = totalItems;
@@ -2698,19 +2921,29 @@
         if (cart.length === 0) {
             container.innerHTML = '<p style="text-align:center; padding: 20px;">Your cart is empty.</p>';
             document.getElementById('subtotalAmount').innerText = '0 BDT';
+            document.getElementById('discountRow').style.display = 'none';
+            document.getElementById('deliveryAmount').innerText = '25 BDT';
             document.getElementById('totalAmount').innerText = '0 BDT';
             return;
         }
 
         let subtotal = 0;
+        let hasEligibleFreeDeliveryItem = false;
+
         container.innerHTML = cart.map((item, index) => {
             const itemTotal = item.finalPrice * item.qty;
             subtotal += itemTotal;
+
+            if (item.freeDelivery) {
+                hasEligibleFreeDeliveryItem = true;
+            }
+
             return `
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <div class="cart-item-code">Code: ${item.code}</div>
                         <div class="cart-item-title">${item.name}</div>
+                        ${item.freeDelivery ? '<div style="color: #2a9d8f; font-size: 0.75rem; font-weight: bold;">Free Delivery Eligible</div>' : ''}
                         ${item.note ? `<div class="cart-item-note">Note: ${item.note}</div>` : ''}
                         <div>${item.finalPrice} BDT × ${item.qty} = ${itemTotal} BDT</div>
                     </div>
@@ -2723,8 +2956,37 @@
             `;
         }).join('');
 
-        const finalTotal = subtotal > 0 ? subtotal + DELIVERY_CHARGE : 0;
+        // Calculate Special Discount
+        let discountAmountValue = 0;
+        const discountRow = document.getElementById('discountRow');
+
+        if (activeCoupon && activeCoupon.type === 'percent') {
+            discountAmountValue = Math.round(subtotal * (activeCoupon.value / 100));
+            document.getElementById('discountPercentageText').innerText = activeCoupon.value;
+            document.getElementById('discountAmount').innerText = `-${discountAmountValue} BDT`;
+            discountRow.style.display = 'flex';
+        } else {
+            discountRow.style.display = 'none';
+        }
+
+        const discountedSubtotal = subtotal - discountAmountValue;
+
+        // Calculate Delivery Charge
+        let currentDeliveryCharge = BASE_DELIVERY_CHARGE;
+        if (activeCoupon && activeCoupon.type === 'free_delivery' && hasEligibleFreeDeliveryItem) {
+            // Check if all items or specific items in cart are free delivery eligible
+            const allFree = cart.every(item => item.freeDelivery);
+            if (allFree) {
+                currentDeliveryCharge = 0;
+            } else {
+                currentDeliveryCharge = BASE_DELIVERY_CHARGE; // Or waive partially if desired
+            }
+        }
+
+        const finalTotal = discountedSubtotal > 0 ? discountedSubtotal + currentDeliveryCharge : 0;
+        
         document.getElementById('subtotalAmount').innerText = `${subtotal} BDT`;
+        document.getElementById('deliveryAmount').innerText = currentDeliveryCharge === 0 ? '0 BDT (Free)' : `${currentDeliveryCharge} BDT`;
         document.getElementById('totalAmount').innerText = `${finalTotal} BDT`;
     }
 
@@ -2753,22 +3015,47 @@
         const address = document.getElementById('custAddress').value;
 
         let subtotal = 0;
+        let hasEligibleFreeDeliveryItem = false;
         let message = `*NEW ORDER RECEIVED*\n\n*Customer Details:*\n• Name: ${name}\n• Phone: ${phone}\n• Email: ${email}\n• Address: ${address}\n\n*Order Items:*\n`;
 
         cart.forEach((item, index) => {
             const itemTotal = item.finalPrice * item.qty;
             subtotal += itemTotal;
+            if (item.freeDelivery) hasEligibleFreeDeliveryItem = true;
             message += `${index + 1}. [${item.code}] ${item.name} (x${item.qty}) - ${itemTotal} BDT\n`;
             if (item.note) message += `   Note: ${item.note}\n`;
         });
 
-        const grandTotal = subtotal + DELIVERY_CHARGE;
-        message += `\n*Subtotal:* ${subtotal} BDT\n*Delivery Charge:* ${DELIVERY_CHARGE} BDT\n*Grand Total:* ${grandTotal} BDT`;
+        let discountAmountValue = 0;
+        if (activeCoupon && activeCoupon.type === 'percent') {
+            discountAmountValue = Math.round(subtotal * (activeCoupon.value / 100));
+        }
+        const discountedSubtotal = subtotal - discountAmountValue;
+
+        let finalDelivery = BASE_DELIVERY_CHARGE;
+        if (activeCoupon && activeCoupon.type === 'free_delivery' && cart.every(item => item.freeDelivery)) {
+            finalDelivery = 0;
+        }
+
+        const grandTotal = discountedSubtotal + finalDelivery;
+
+        message += `\n*Subtotal:* ${subtotal} BDT\n`;
+        if (activeCoupon && activeCoupon.type === 'percent') {
+            message += `*Discount (${activeCoupon.code} - ${activeCoupon.value}%):* -${discountAmountValue} BDT\n`;
+        }
+        message += `*Delivery Charge:* ${finalDelivery} BDT\n*Grand Total:* ${grandTotal} BDT`;
+        
+        if (activeCoupon) {
+            message += `\n*Applied Coupon:* ${activeCoupon.code}`;
+        }
 
         const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
 
         cart = [];
+        activeCoupon = null;
+        document.getElementById('couponInput').value = '';
+        document.getElementById('couponMessage').innerText = '';
         document.getElementById('checkoutForm').reset();
         updateCartUI();
         toggleCart();
