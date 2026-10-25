@@ -363,6 +363,42 @@
             background: var(--accent);
         }
 
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .pagination-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .visitor-counter-box {
             text-align: center;
             margin: 30px auto 20px auto;
@@ -497,6 +533,20 @@
 
         .dot.active {
             background: var(--accent);
+        }
+
+        /* Large Product Description styling */
+        .detail-description {
+            font-size: 1.05rem !important;
+            color: #222 !important;
+            line-height: 1.6 !important;
+            margin-bottom: 20px !important;
+            padding: 15px !important;
+            background: #f8f9fa !important;
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            max-height: 250px;
+            overflow-y: auto;
         }
 
         .cart-content {
@@ -778,6 +828,9 @@
     <!-- Product Grid -->
     <div class="products-grid" id="productsGrid"></div>
 
+    <!-- Pagination Controls -->
+    <div class="pagination-container" id="paginationContainer"></div>
+
     <!-- Visitor Counter Widget -->
     <div class="visitor-counter-box">
         <h3 id="lblPageViews">পেজ ভিউ (Page Views)</h3>
@@ -799,7 +852,7 @@
         <div id="detailTitle" class="detail-title"></div>
         <div id="detailPrice" class="detail-price"></div>
         <div id="detailFreeShippingTag"></div>
-        <div id="detailDescription" class="detail-description" style="font-size: 0.9rem; color: #555; line-height: 1.4; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;"></div>
+        <div id="detailDescription" class="detail-description"></div>
         <input type="text" class="note-input" id="detailNoteInput" placeholder="নোট (সাইজ, কালার ইত্যাদি)">
         <button class="add-to-cart-btn" id="detailAddToCartBtn" style="width: 100%; padding: 12px;">কার্টে যোগ করুন</button>
     </div>
@@ -953,65 +1006,788 @@
     const WHATSAPP_NUMBER = "966530725809";
     const INSIDE_DELIVERY_CHARGE = 25;
     const OUTSIDE_DELIVERY_CHARGE = 50;
+    const PRODUCTS_PER_PAGE = 25;
+
     let cart = [];
     let currentCategory = 'All';
-    let products = [];
-    let currentLang = 'bn'; // 'bn' for Bangla, 'en' for English
+    let currentLang = 'bn'; 
+    let currentPage = 1;
+    let filteredProductsList = [];
     
     // Active Coupon State
     let activeCoupon = null;
 
-    // Google Sheets Published HTML URL
-    
-// Google Sheets CSV Export URL (Make sure your sheet is published as .csv)
-    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpsa0R-H88SJng5fvWpuvUeaYHIiJ-C1KbAa7Bhr1bZ-QFjxfpDx--VcvNzRKy129BWFLMmjxYInqo/pub?gid=0&single=true&output=csv";
-
-    async function loadProductsFromSheet() {
-        try {
-            const response = await fetch(GOOGLE_SHEET_CSV_URL);
-            const csvText = await response.text();
-            
-            const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
-            
-            if (lines.length < 2) {
-                renderProducts([]);
-                return;
-            }
-
-            // Extract headers from the first row
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
-
-            products = lines.slice(1).map((line, index) => {
-                const cells = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-                let rowData = {};
-                headers.forEach((header, i) => {
-                    rowData[header] = cells[i] || '';
-                });
-
-                const mainImg = rowData.image || '';
-                const extraImgs = rowData.images ? rowData.images.split(',').map(s => s.trim()) : [];
-
-                return {
-                    id: Number(rowData.id) || (index + 1),
-                    code: rowData.code || `P-${100 + index}`,
-                    name: rowData.name || 'Unnamed Product',
-                    price: Number(rowData.price) || 0,
-                    discount: Number(rowData.discount) || 0,
-                    freeDelivery: rowData.freedelivery ? rowData.freedelivery.toLowerCase() === 'true' : false,
-                    category: rowData.category || 'All',
-                    image: mainImg,
-                    images: extraImgs.length > 0 ? extraImgs : [mainImg],
-                    description: rowData.description || ''
-                };
-            }).filter(p => p.name && p.price > 0);
-
-            renderProducts(products);
-        } catch (error) {
-            console.error("Error loading products from Google Sheets:", error);
-            renderProducts([]);
+    // CONSOLIDATED PRODUCT LIST
+    let products = [
+        {
+            id: 1,
+            code: "P-101",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: true,
+            category: "Woman",
+            images: ["s001.jpg", "u001.jpg", "b001.jpg"],
+            image: "rwein1.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve.\n\nএই পণ্যটিতে রয়েছে প্রিমিয়াম সুতি কাপড়ের তৈরি অত্যন্ত আরামদায়ক ও সফট ফিটিং যা সারাদিন ব্যবহারে আপনাকে দেবে সম্পূর্ণ রিলাক্সেশন। এর নিখুঁত স্টিচিং ও টেকসই ফ্যাব্রিকেশন দীর্ঘস্থায়ী স্থায়িত্ব নিশ্চিত করে।"
+        },
+        {
+            id: 2,
+            code: "P-102",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s002.jpg", "u002.jpg", "b002.jpg"],
+            image: "rwein2.jpg",
+            description: "✨ Classic Brown Crossbody Bag – অভিজাত ও স্টাইলিশ"
+        },
+        {
+            id: 79,
+            code: "P-179",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s079.jpg","u079.jpg","b079.jpg"],
+            image: "rwein79.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 80,
+            code: "P-180",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s080.jpg","u080.jpg","b080.jpg"],
+            image: "rwein89.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 81,
+            code: "P-181",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s081.jpg", "u081.jpg", "b081.jpg"],
+            image: "rwein81.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 82,
+            code: "P-182",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s082.jpg", "u082.jpg", "b082.jpg"],
+            image: "rwein82.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 83,
+            code: "P-183",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s083.jpg", "u083.jpg", "b083.jpg"],
+            image: "rwein83.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 84,
+            code: "P-184",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s084.jpg", "u084.jpg", "b084.jpg"],
+            image: "rwein84.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 85,
+            code: "P-185",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s085.jpg","u085.jpg","b085.jpg"],
+            image: "rwein85.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 86,
+            code: "P-186",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s086.jpg","u086.jpg","b086.jpg"],
+            image: "rwein86.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 87,
+            code: "P-187",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s087.jpg","u087.jpg","b087.jpg"],
+            image: "rwein87.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 88,
+            code: "P-188",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s088.jpg", "u088.jpg", "b088.jpg"],
+            image: "rwein88.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 89,
+            code: "P-189",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s089.jpg", "u089.jpg", "b089.jpg"],
+            image: "rwein88.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 90,
+            code: "P-190",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s090.jpg", "u090.jpg", "b090.jpg"],
+            image: "rwein90.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 91,
+            code: "P-191",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s091.jpg", "u091.jpg", "b091.jpg"],
+            image: "rwein91.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 92,
+            code: "P-192",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s092.jpg","u092.jpg","b092.jpg"],
+            image: "rwein92.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 93,
+            code: "P-193",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s093.jpg","u093.jpg","b093.jpg"],
+            image: "rwein93.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 94,
+            code: "P-194",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s094.jpg","u094.jpg","b094.jpg"],
+            image: "rwein94.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 95,
+            code: "P-195",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s095.jpg", "u095.jpg", "b095.jpg"],
+            image: "rwein95.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 96,
+            code: "P-196",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s096.jpg", "u096.jpg", "b096.jpg"],
+            image: "rwein96.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 97,
+            code: "P-197",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s097.jpg", "u097.jpg", "b097.jpg"],
+            image: "rwein97.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 98,
+            code: "P-198",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s097.jpg", "u098.jpg", "b098.jpg"],
+            image: "rwein98.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 99,
+            code: "P-199",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s099.jpg","u099.jpg","b099.jpg"],
+            image: "rwein99.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 100,
+            code: "P-200",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s100.jpg","u100.jpg","b100.jpg"],
+            image: "rwein100.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 101,
+            code: "P-201",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s101.jpg","u101.jpg","b101.jpg"],
+            image: "rwein101.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 102,
+            code: "P-202",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s102.jpg", "u102.jpg", "b102.jpg"],
+            image: "rwein102.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 103,
+            code: "P-203",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s103.jpg", "u103.jpg", "b103.jpg"],
+            image: "rwein103.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 104,
+            code: "P-204",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s104.jpg", "u104.jpg", "b104.jpg"],
+            image: "rwein104.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 105,
+            code: "P-205",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s105.jpg", "u105.jpg", "b105.jpg"],
+            image: "rwein105.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 106,
+            code: "P-206",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s106.jpg","u106.jpg", "b106.jpg"],
+            image: "rwein106.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 107,
+            code: "P-207",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s107.jpg","u107.jpg", "b107.jpg"],
+            image: "rwein107.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 108,
+            code: "P-208",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s108.jpg","u108.jpg", "b108.jpg"],
+            image: "rwein108.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 109,
+            code: "P-209",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s109.jpg", "u109.jpg", "b108.jpg"],
+            image: "rwein109.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 110,
+            code: "P-210",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s110.jpg", "u110.jpg", "b110.jpg"],
+            image: "rwein110.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 111,
+            code: "P-211",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s111.jpg", "u111.jpg", "b111.jpg"],
+            image: "rwein111.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 112,
+            code: "P-212",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s112.jpg", "u112.jpg", "b112.jpg"],
+            image: "rwein112.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 113,
+            code: "P-213",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s113.jpg","u113.jpg", "b113.jpg"],
+            image: "rwein113.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 114,
+            code: "P-214",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s114.jpg","u114.jpg", "b114.jpg"],
+            image: "rwein114.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 115,
+            code: "P-215",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s115.jpg","u115.jpg", "b115.jpg"],
+            image: "rwein115.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 116,
+            code: "P-216",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s116.jpg", "u116.jpg", "b116.jpg"],
+            image: "rwein116.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 117,
+            code: "P-217",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s117.jpg", "u117.jpg", "b117.jpg"],
+            image: "rwein117.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 118,
+            code: "P-218",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s118.jpg", "u118.jpg", "b118.jpg"],
+            image: "rwein118.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 119,
+            code: "P-219",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s119.jpg", "u119.jpg", "b119.jpg"],
+            image: "rwein119.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 120,
+            code: "P-220",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s120.jpg","u120.jpg", "b120.jpg"],
+            image: "rwein120.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 121,
+            code: "P-221",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s121.jpg","u121.jpg", "b121.jpg"],
+            image: "rwein121.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 122,
+            code: "P-222",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s122.jpg","u122.jpg", "b122.jpg"],
+            image: "rwein122.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 123,
+            code: "P-223",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s123.jpg", "u123.jpg", "b123.jpg"],
+            image: "rwein123.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 124,
+            code: "P-224",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s124.jpg", "u124.jpg", "b124.jpg"],
+            image: "rwein5.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 125,
+            code: "P-225",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s125.jpg", "u125.jpg", "b125.jpg"],
+            image: "rwein125.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 126,
+            code: "P-226",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s126.jpg", "u126.jpg", "b126.jpg"],
+            image: "rwein126.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 127,
+            code: "P-227",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s127.jpg","u127.jpg", "b127.jpg"],
+            image: "rwein127.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 128,
+            code: "P-228",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s128.jpg","u128.jpg", "b128.jpg"],
+            image: "rwein128.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 129,
+            code: "P-229",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s129.jpg","u129.jpg", "b129.jpg"],
+            image: "rwein129.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 130,
+            code: "P-230",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s130.jpg", "u120.jpg", "b130.jpg"],
+            image: "rwein130.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 131,
+            code: "P-231",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s131.jpg", "u131.jpg", "b131.jpg"],
+            image: "rwein131.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 132,
+            code: "P-232",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s132.jpg", "u132.jpg", "b132.jpg"],
+            image: "rwein132.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 133,
+            code: "P-233",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s133.jpg", "u133.jpg", "b133.jpg"],
+            image: "rwein133.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 134,
+            code: "P-234",
+            name: "Pure Cotton Fabric Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s134.jpg","u134.jpg", "b134.jpg"],
+            image: "rwein134.jpg",
+            description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+            id: 135,
+            code: "P-235",
+            name: "Wide Strap Goddy",
+            price: 99,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s135.jpg","u135.jpg", "b135.jpg"],
+            image: "rwein135.jpg",
+            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+            id: 136,
+            code: "P-236",
+            name: "Indian Copy Stitch Bra",
+            price: 110,
+            discount: 0,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s136.jpg","u136.jpg", "b136.jpg"],
+            image: "rwein136.jpg",
+            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+            id: 137,
+            code: "P-237",
+            name: "Women's Handbag",
+            price: 950,
+            discount: 10,
+            freeDelivery: false,
+            category: "Woman",
+            images: ["s137.jpg", "u137.jpg", "b137.jpg"],
+            image: "rwein137.jpg",
+            description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+            id: 138,
+            code: "P-238",
+            name: "Smart Watch Strap",
+            price: 250,
+            discount: 5,
+            freeDelivery: false,
+            category: "Accessories",
+            images: ["s138.jpg", "u138.jpg", "b138.jpg"],
+            image: "rwein138.jpg",
+            description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+            id: 139,
+            code: "P-239",
+            name: "Unicorn LED Lamp",
+            price: 600,
+            discount: 100,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s139.jpg", "u139.jpg", "b139.jpg"],
+            image: "rwein139.jpg",
+            description: "Cute decorative night light lamp for rooms."
+        },
+        {
+            id: 140,
+            code: "P-240",
+            name: "Unicorn LED Lamp",
+            price: 100,
+            discount: 1,
+            freeDelivery: false,
+            category: "Home",
+            images: ["s140.jpg", "u140.jpg", "b140.jpg"],
+            image: "rwein140.jpg",
+            description: "Cute decorative night light lamp for rooms."
         }
-    }
-    
+    ];
 
     // Language Dictionary
     const i18n = {
@@ -1042,7 +1818,7 @@
             emailPlaceholder: "ইমেইল অ্যাড্রেস (ঐচ্ছিক)",
             addressPlaceholder: "বিস্তারিত ডেলিভারি ঠিকানা",
             deliveryAreaLabel: "ডেলিভারি এরিয়া:",
-            optInside: "কিশোরগঞ্জ সদর (২৫ টাকা)",
+            optInside: "কিশোরগঞ্জ (২৫ টাকা)",
             optOutside: "কিশোরগঞ্জের বাইরে (৫০ টাকা)",
             submitOrder: "হোয়াটসঅ্যাপে অর্ডার সাবমিট করুন",
             couponPlaceholder: "কুপন কোড দিন",
@@ -1052,7 +1828,9 @@
             contactUs: "যোগাযোগ করুন:",
             thankYouTitle: "অর্ডারের জন্য ধন্যবাদ!",
             thankYouSub: "আমরা দ্রুত আপনার সাথে যোগাযোগ করব।",
-            closeBtn: "বন্ধ করুন"
+            closeBtn: "বন্ধ করুন",
+            prev: "পূর্ববর্তী",
+            next: "পরবর্তী"
         },
         en: {
             langToggle: "🌐 বাংলা",
@@ -1091,20 +1869,21 @@
             contactUs: "Contact Us:",
             thankYouTitle: "Thank You For Your Order!",
             thankYouSub: "We will respond as soon as possible.",
-            closeBtn: "Close"
+            closeBtn: "Close",
+            prev: "Previous",
+            next: "Next"
         }
     };
 
     window.toggleLanguage = function() {
         currentLang = currentLang === 'bn' ? 'en' : 'bn';
         updateUIElements();
-        renderProducts(products);
+        applyFilters();
         updateCartUI();
     };
 
     function updateUIElements() {
         const lang = i18n[currentLang];
-        
         document.getElementById('langToggleBtn').innerText = lang.langToggle;
         document.getElementById('searchInput').placeholder = lang.searchPlaceholder;
         document.getElementById('catAll').innerText = lang.catAll;
@@ -1113,80 +1892,27 @@
         document.getElementById('catHome').innerText = lang.catHome;
         document.getElementById('catAcc').innerText = lang.catAcc;
         document.getElementById('lblPageViews').innerText = lang.pageViews;
-        
         document.getElementById('lblCartTitle').innerText = lang.cartTitle;
         document.getElementById('lblSubtotal').innerText = lang.subtotal;
         document.getElementById('lblDeliveryCharge').innerText = lang.deliveryCharge;
         document.getElementById('lblTotal').innerText = lang.total;
         document.getElementById('lblCustomerDetails').innerText = lang.customerDetails;
-        
         document.getElementById('custName').placeholder = lang.fullNamePlaceholder;
         document.getElementById('custPhone').placeholder = lang.phonePlaceholder;
         document.getElementById('custEmail').placeholder = lang.emailPlaceholder;
         document.getElementById('custAddress').placeholder = lang.addressPlaceholder;
         document.getElementById('lblDeliveryArea').innerText = lang.deliveryAreaLabel;
-        
         document.getElementById('optInside').innerText = lang.optInside;
         document.getElementById('optOutside').innerText = lang.optOutside;
         document.getElementById('lblSubmitOrder').innerText = lang.submitOrder;
-        
         document.getElementById('couponInput').placeholder = lang.couponPlaceholder;
         document.getElementById('lblApplyCoupon').innerText = lang.applyCoupon;
-        
         document.getElementById('lblContactUs').innerText = lang.contactUs;
         document.getElementById('lblThankYou').innerText = lang.thankYouTitle;
         document.getElementById('lblThankYouSub').innerText = lang.thankYouSub;
         document.getElementById('lblClosePopup').innerText = lang.closeBtn;
-        
         document.getElementById('detailNoteInput').placeholder = lang.notePlaceholder;
         document.getElementById('detailAddToCartBtn').innerText = lang.addToCart;
-    }
-
-    async function loadProductsFromSheet() {
-        try {
-            const response = await fetch(GOOGLE_SHEET_PUB_URL);
-            const htmlText = await response.text();
-            
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
-            const rows = Array.from(doc.querySelectorAll('table tbody tr'));
-            
-            if (rows.length < 2) {
-                renderProducts([]);
-                return;
-            }
-
-            const headers = Array.from(rows[0].querySelectorAll('td')).map(td => td.textContent.trim().toLowerCase());
-
-            products = rows.slice(1).map((row, index) => {
-                const cells = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
-                let rowData = {};
-                headers.forEach((header, i) => {
-                    rowData[header] = cells[i] || '';
-                });
-
-                const mainImg = rowData.image || '';
-                const extraImgs = rowData.images ? rowData.images.split(',').map(s => s.trim()) : [];
-
-                return {
-                    id: Number(rowData.id) || (index + 1),
-                    code: rowData.code || `P-${100 + index}`,
-                    name: rowData.name || 'Unnamed Product',
-                    price: Number(rowData.price) || 0,
-                    discount: Number(rowData.discount) || 0,
-                    freeDelivery: rowData.freedelivery ? rowData.freedelivery.toLowerCase() === 'true' : false,
-                    category: rowData.category || 'All',
-                    image: mainImg,
-                    images: extraImgs.length > 0 ? extraImgs : [mainImg],
-                    description: rowData.description || ''
-                };
-            }).filter(p => p.name && p.price > 0);
-
-            renderProducts(products);
-        } catch (error) {
-            console.error("Error loading products from Google Sheets:", error);
-            renderProducts([]);
-        }
     }
 
     let currentDetailImages = [];
@@ -1197,7 +1923,6 @@
         return Math.round(price - (price * (discountPercent / 100)));
     }
 
-    // Auth Handlers
     window.openAuthModal = function (mode = 'login') {
         switchAuthMode(mode);
         document.getElementById('authModal').classList.add('open');
@@ -1228,19 +1953,12 @@
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            await sendEmailVerification(user);
-
+            await sendEmailVerification(userCredential.user);
             if (db) {
-                await setDoc(doc(db, "users", user.uid), {
-                    fullName: name,
-                    phone: phone,
-                    email: email,
-                    createdAt: new Date().toISOString()
+                await setDoc(doc(db, "users", userCredential.user.uid), {
+                    fullName: name, phone: phone, email: email, createdAt: new Date().toISOString()
                 });
             }
-
             alert("Registration successful! A verification link has been sent to your email.");
             closeAuthModal();
         } catch (error) {
@@ -1257,14 +1975,11 @@
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            if (!user.emailVerified) {
+            if (!userCredential.user.emailVerified) {
                 alert("Your email address is not verified yet. Please check your inbox.");
                 await signOut(auth);
                 return;
             }
-
             alert("Logged in successfully!");
             closeAuthModal();
         } catch (error) {
@@ -1285,7 +2000,6 @@
             const lang = i18n[currentLang];
             if (user && user.emailVerified) {
                 navContainer.innerHTML = `<button class="auth-nav-btn" onclick="handleLogout()">${lang.logoutNav}</button>`;
-                
                 if (db) {
                     try {
                         const docSnap = await getDoc(doc(db, "users", user.uid));
@@ -1305,7 +2019,6 @@
         });
     }
 
-    // Store Logic
     async function trackVisitor() {
         try {
             const response = await fetch('https://api.counterapi.dev/v2/my-github-site/page-views/up');
@@ -1330,7 +2043,10 @@
             return;
         }
 
-        grid.innerHTML = itemsToRender.map(product => {
+        const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+        const paginatedItems = itemsToRender.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
+        grid.innerHTML = paginatedItems.map(product => {
             const finalPrice = getDiscountedPrice(product.price, product.discount);
             const hasDiscount = product.discount && product.discount > 0;
 
@@ -1354,28 +2070,73 @@
                 </div>
             `;
         }).join('');
+
+        renderPagination(itemsToRender.length);
     }
+
+    function renderPagination(totalItems) {
+        const container = document.getElementById('paginationContainer');
+        const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
+        const lang = i18n[currentLang];
+
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let paginationHTML = `
+            <button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                ${lang.prev}
+            </button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHTML += `
+                <button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                    ${i}
+                </button>
+            `;
+        }
+
+        paginationHTML += `
+            <button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                ${lang.next}
+            </button>
+        `;
+
+        container.innerHTML = paginationHTML;
+    }
+
+    window.changePage = function (page) {
+        const totalPages = Math.ceil(filteredProductsList.length / PRODUCTS_PER_PAGE);
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderProducts(filteredProductsList);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     window.filterByCategory = function (category, buttonElement) {
         currentCategory = category;
         document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
         if (buttonElement) buttonElement.classList.add('active');
         document.getElementById('searchInput').value = '';
+        currentPage = 1;
         applyFilters();
     };
 
     window.filterProducts = function () {
+        currentPage = 1;
         applyFilters();
     };
 
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const filtered = products.filter(product => {
+        filteredProductsList = products.filter(product => {
             const matchesCategory = (currentCategory === 'All' || product.category === currentCategory);
             const matchesSearch = product.name.toLowerCase().includes(query) || product.code.toLowerCase().includes(query);
             return matchesCategory && matchesSearch;
         });
-        renderProducts(filtered);
+        renderProducts(filteredProductsList);
     }
 
     window.openDetailModal = function (productId) {
@@ -1399,7 +2160,9 @@
         document.getElementById('detailFreeShippingTag').innerHTML = product.freeDelivery ? 
             `<div class="free-delivery-badge" style="margin-bottom: 10px;">${lang.freeDeliveryEligible}</div>` : '';
 
-        document.getElementById('detailDescription').innerText = product.description || "No full description available.";
+        const descElem = document.getElementById('detailDescription');
+        descElem.style.whiteSpace = "pre-line";
+        descElem.innerText = product.description || "No full description available.";
         document.getElementById('detailNoteInput').value = '';
 
         const btn = document.getElementById('detailAddToCartBtn');
@@ -1484,7 +2247,7 @@
         } else if (codeInput === "RWEINFD") {
             activeCoupon = { code: 'RWEINFD', type: 'free_delivery' };
             msgContainer.style.color = "#2a9d8f";
-            msgContainer.innerText = "✓ Coupon 'RWEINFD' applied successfully!";
+            msgContainer.innerText = "✓ Coupon 'RWEINFD' applied successfully (Free Delivery)!";
         } else if (codeInput === "") {
             activeCoupon = null;
             msgContainer.innerText = "";
@@ -1512,15 +2275,10 @@
         }
 
         let subtotal = 0;
-        let hasEligibleFreeDeliveryItem = false;
 
         container.innerHTML = cart.map((item, index) => {
             const itemTotal = item.finalPrice * item.qty;
             subtotal += itemTotal;
-
-            if (item.freeDelivery) {
-                hasEligibleFreeDeliveryItem = true;
-            }
 
             return `
                 <div class="cart-item">
@@ -1558,11 +2316,8 @@
         const selectedArea = areaSelect ? areaSelect.value : 'inside';
         let currentDeliveryCharge = (selectedArea === 'outside') ? OUTSIDE_DELIVERY_CHARGE : INSIDE_DELIVERY_CHARGE;
 
-        if (activeCoupon && activeCoupon.type === 'free_delivery' && hasEligibleFreeDeliveryItem) {
-            const allFree = cart.every(item => item.freeDelivery);
-            if (allFree) {
-                currentDeliveryCharge = 0;
-            }
+        if (activeCoupon && activeCoupon.type === 'free_delivery') {
+            currentDeliveryCharge = 0;
         }
 
         const finalTotal = discountedSubtotal > 0 ? discountedSubtotal + currentDeliveryCharge : 0;
@@ -1615,7 +2370,7 @@
         const discountedSubtotal = subtotal - discountAmountValue;
 
         let finalDelivery = (areaSelect.value === 'outside') ? OUTSIDE_DELIVERY_CHARGE : INSIDE_DELIVERY_CHARGE;
-        if (activeCoupon && activeCoupon.type === 'free_delivery' && cart.every(item => item.freeDelivery)) {
+        if (activeCoupon && activeCoupon.type === 'free_delivery') {
             finalDelivery = 0;
         }
 
@@ -1648,9 +2403,9 @@
         document.getElementById('thankYouPopup').classList.remove('open');
     };
 
-    // Initialize Store UI & Sheet Data
+    // Initialize Store UI & Local Products
     updateUIElements();
-    loadProductsFromSheet();
+    applyFilters();
     trackVisitor();
 </script>
 </body>
