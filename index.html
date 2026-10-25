@@ -11,11 +11,11 @@
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
-            --primary: #25D366;
-            --dark: #121212;
+            --primary: #0CA9F8;
+            --dark: #0771a8;
             --light: #F4F4F9;
-            --accent: #075E54;
-            --gray: #666;
+            --accent: #0CA9F8;
+            --gray: #e0e0e0;
         }
 
         * {
@@ -27,7 +27,7 @@
 
         body {
             background-color: #0CA9F8;
-            color: #333;
+            color: #ffffff;
             padding-bottom: 90px;
         }
 
@@ -36,55 +36,59 @@
             max-width: 1200px;
             margin: 0 auto;
             background-color: #0CA9F8;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
             min-height: 100vh;
             position: relative;
         }
 
-        /* Top Bar */
+        /* Top Bar Header Layout */
         .top-banner {
-            background: #ffffff;
-            padding: 15px 30px;
+            background: #0CA9F8;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            border-bottom: 2px solid #eee;
         }
 
         .logo-container {
-            height: 55px;
+        	width:18rem;
+            height: 4rem;
             position: relative;
-            padding: 3px 30px;
-            border: 3px solid #0CA9F8;
+            padding: 3px 20px;
+            border: 2px solid #ffffff;
             border-radius: 50px;
-            background: #0CA9F8;
+            background: #0589CB;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4), inset 0 0 15px rgba(0, 210, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
         
         .logo-text {
             font-family: 'Courier New', monospace;
-            font-size: 30px;
+            font-size: 33px;
             font-weight: bold;
             color: #ffffff;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
             z-index: 2;
         }
-        
         .water-drop {
-            position: absolute;
-            width: 8px;
-            height: 5px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #00d2ff, 0 0 12px #ffffff;
-            opacity: 0;
-            z-index: 3;
+        position: absolute;
+        width: 8px;
+        height: 5px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #00d2ff, 0 0 12px #ffffff;
+        opacity: 0;
+        z-index: 3;
         }
         
         .drop-1  { top: -3px; left: 10px;  animation: slideRightAndFall 3s linear infinite 0.0s; }
@@ -95,131 +99,56 @@
         .drop-6  { top: -3px; left: 135px; animation: slideRightAndFall 3s linear infinite 2.5s; }
         
         @keyframes slideRightAndFall {
-            0% { transform: translate(0, 0); opacity: 0; }
-            10% { opacity: 1; }
-            40% { transform: translate(80px, 0); opacity: 1; }
-            55% { transform: translate(100px, 15px); opacity: 1; }
-            85% { transform: translate(100px, 80px); opacity: 1; }
-            100% { transform: translate(100px, 100px); opacity: 0; }
+        0% { transform: translate(0, 0); opacity: 0; }
+        10% { opacity: 1; }
+        40% { transform: translate(80px, 0); opacity: 1; }
+        55% { transform: translate(100px, 15px); opacity: 1; }
+        85% { transform: translate(100px, 80px); opacity: 1; }
+        100% { transform: translate(100px, 100px); opacity: 0; }
         }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .lang-btn {
-            background: #e0f2fe;
-            color: #0284c7;
-            border: 1px solid #0284c7;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .lang-btn:hover {
-            background: #0284c7;
-            color: white;
-        }
-
-        .auth-nav-btn {
-            background: #0CA9F8;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .auth-nav-btn:hover {
-            background: #087db8;
-        }
-
-        header {
-            position: sticky;
-            top: 0;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .search-container {
-            flex-grow: 1;
-            max-width: 500px;
-            margin: 0 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 20px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--accent);
-        }
-
-        .category-bar {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 15px 30px;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 73px;
-            z-index: 99;
-        }
-
-        .category-btn {
-            background: #f0f0f0;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--gray);
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .category-btn:hover {
-            background: #e0e0e0;
-        }
-
-        .category-btn.active {
-            background: var(--accent);
-            color: white;
-        }
-
         .cart-icon-container {
-            position: relative;
+        position: fixed;        /* Keeps the cart fixed on the screen during scroll */
+               /* Distance from the bottom of the screen */
+        right: 35px;            /* Distance from the right of the screen */
+        z-index: 9999;          /* Ensures it appears in front of all other elements */
+        cursor: pointer;
+        font-size: 1.8rem;
+        background: white;
+        padding: 12px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adds a floating shadow effect */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        
+      /*  .cart-icon-container {
+            position: fixed;
             cursor: pointer;
             font-size: 1.8rem;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }*/
+        
+        .cart-icon-container:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
         }
 
         .cart-badge {
             position: absolute;
-            top: -8px;
-            right: -10px;
-            background: red;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
             padding: 2px 6px;
             border-radius: 50%;
@@ -230,7 +159,205 @@
             transform: scale(1.3);
         }
 
-        /* Grid */
+        /* 3 Options in 1 Row: Lang, Search, Auth */
+        .header-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .lang-btn {
+            background: #ffffff;
+            color: #0CA9F8;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            background: #e0f2fe;
+        }
+
+        .search-container {
+            flex-grow: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 16px;
+            border: 1px solid #ffffff;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            transition: border-color 0.2s;
+        }
+
+        .auth-nav-btn {
+            background: #ffffff;
+            color: #0CA9F8;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .auth-nav-btn:hover {
+            background: #e0f2fe;
+        }
+
+        /* Category Bar */
+        .category-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            backdrop-filter: blur(5px);
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .category-btn.active {
+            background: #ffffff;
+            color: #0CA9F8;
+            border-color: #ffffff;
+        }
+
+        
+        /* NEW ARRIVAL BANNER FULL BACKGROUND IMAGE */
+        .new-arrival-banner {
+        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('rwein1.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        margin: 15px 20px;
+        padding: 25px 20px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        flex-wrap: wrap;
+        }
+		.banner-img {
+		width:100px;
+		height:100px;
+		object-fit: cover;
+		border-radius: 10px;
+		cursor: pointer;
+		border: 2px solid rgba(255, 255, 255, 0.6);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+		transition: transform 0.2s ease;
+		}
+		
+		.banner-img:hover {
+		transform: scale(1.05);
+		}
+        .banner-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .banner-tag {
+            background: #ffffff;
+            color: #0CA9F8;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .banner-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .banner-pricing {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .banner-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .banner-original-price {
+            text-decoration: line-through;
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+
+        .banner-discount {
+            background: #ff4757;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .banner-action-btn {
+            background: white;
+            color: #0CA9F8;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .banner-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -248,10 +375,11 @@
         }
 
         .product-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            background: #ffffff;
+            color: #333333;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -259,50 +387,41 @@
         }
 
         .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
         }
 
         .product-card img {
             width: 100%;
-            height: 160px;
+            height: 150px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .product-card img:hover {
-            opacity: 0.9;
         }
 
         .product-code {
-            font-size: 0.8rem;
-            color: red;
-            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #ff4757;
+            margin-top: 8px;
             font-weight: bold;
         }
 
         .product-title {
-            font-size: 0.95rem;
-            margin: 5px 0;
+            font-size: 0.9rem;
+            margin: 4px 0;
             font-weight: 600;
+            color: #222;
             cursor: pointer;
-            transition: color 0.2s;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .product-title:hover {
-            color: var(--accent);
-        }
-
         .product-price {
             font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 1rem;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -312,7 +431,7 @@
         .original-price {
             text-decoration: line-through;
             color: #888;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .discounted-price {
@@ -323,8 +442,8 @@
         .discount-badge {
             background: #e63946;
             color: white;
-            font-size: 0.75rem;
-            padding: 2px 6px;
+            font-size: 0.7rem;
+            padding: 2px 5px;
             border-radius: 4px;
         }
 
@@ -335,32 +454,33 @@
             padding: 2px 6px;
             border-radius: 4px;
             display: inline-block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .note-input {
             width: 100%;
-            padding: 8px;
-            font-size: 0.85rem;
-            border: 1px solid #ccc;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            outline: none;
         }
 
         .add-to-cart-btn {
-            background: var(--primary);
+            background: #0CA9F8;
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: background 0.2s;
         }
 
         .add-to-cart-btn:hover {
-            background: var(--accent);
+            background: #087db8;
         }
 
         /* Pagination Styles */
@@ -374,10 +494,10 @@
         }
 
         .pagination-btn {
-            background: white;
-            color: var(--dark);
-            border: 1px solid #ddd;
-            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 6px 12px;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
@@ -385,49 +505,136 @@
         }
 
         .pagination-btn:hover {
-            background: #f0f0f0;
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .pagination-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            background: white;
+            color: #0CA9F8;
         }
 
         .visitor-counter-box {
             text-align: center;
-            margin: 30px auto 20px auto;
-            padding: 15px;
-            background: white;
+            margin: 20px auto;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             max-width: 250px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .visitor-counter-box h3 {
-            font-size: 0.9rem;
-            color: var(--gray);
+            font-size: 0.85rem;
+            color: #ffffff;
+            opacity: 0.9;
             margin-bottom: 4px;
         }
         #visitor-count {
             font-size: 1.2rem;
             font-weight: bold;
-            color: var(--accent);
+            color: #ffffff;
+        }
+
+        /* DYNAMIC FOOTER STYLES */
+        .site-footer {
+            background: #0771a8;
+            color: #ffffff;
+            padding: 40px 20px 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h3, .footer-col h4 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-col h3::after, .footer-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 35px;
+            height: 2px;
+            background: #ffffff;
+        }
+
+        .footer-col p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+
+        .footer-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .newsletter-input {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            flex-grow: 1;
+        }
+
+        .newsletter-btn {
+            background: #ffffff;
+            color: #0CA9F8;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            opacity: 0.9;
         }
 
         /* Desktop Queries */
         @media (min-width: 768px) {
             .products-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 25px;
-                padding: 30px;
+                gap: 20px;
             }
             .product-card img {
-                height: 220px;
+                height: 180px;
             }
         }
 
@@ -463,6 +670,7 @@
 
         .detail-content, .auth-content {
             background: white;
+            color: #333;
             width: 100%;
             max-width: 500px;
             max-height: 90vh;
@@ -470,7 +678,6 @@
             border-radius: 12px;
             padding: 25px;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
         .detail-close-btn {
@@ -493,10 +700,9 @@
 
         .detail-img {
             width: 100%;
-            height: 320px;
+            height: 300px;
             object-fit: cover;
             border-radius: 8px;
-            display: block;
         }
 
         .slider-btn {
@@ -506,10 +712,9 @@
             background: rgba(0, 0, 0, 0.6);
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 8px 12px;
             cursor: pointer;
             border-radius: 50%;
-            font-size: 1rem;
             z-index: 10;
         }
 
@@ -532,25 +737,25 @@
         }
 
         .dot.active {
-            background: var(--accent);
+            background: #0CA9F8;
         }
 
-        /* Large Product Description styling */
         .detail-description {
-            font-size: 1.05rem !important;
-            color: #222 !important;
-            line-height: 1.6 !important;
-            margin-bottom: 20px !important;
-            padding: 15px !important;
+            font-size: 0.95rem !important;
+            color: #333 !important;
+            line-height: 1.5 !important;
+            margin-bottom: 15px !important;
+            padding: 12px !important;
             background: #f8f9fa !important;
-            border-left: 4px solid var(--accent);
+            border-left: 4px solid #0CA9F8;
             border-radius: 6px;
-            max-height: 250px;
+            max-height: 200px;
             overflow-y: auto;
         }
 
         .cart-content {
             background: white;
+            color: #333;
             width: 100%;
             max-width: 450px;
             height: 100%;
@@ -576,12 +781,21 @@
             background: none;
         }
 
+        /* CART ITEM STYLING FIX */
         .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #eee;
-            padding: 10px 0;
+            padding: 12px 0;
+            gap: 10px;
+        }
+
+        .cart-item-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
         }
 
         .cart-item-info {
@@ -590,39 +804,40 @@
 
         .cart-item-code {
             font-size: 0.75rem;
-            color: var(--gray);
+            color: #ff4757;
             font-weight: bold;
         }
 
         .cart-item-title {
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: #333;
         }
 
         .cart-item-note {
             font-size: 0.75rem;
-            color: var(--gray);
+            color: #666;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
         .quantity-controls button {
-            width: 25px;
-            height: 25px;
+            width: 24px;
+            height: 24px;
             border: 1px solid #ccc;
             background: #f0f0f0;
             cursor: pointer;
             font-weight: bold;
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         .checkout-section {
             margin-top: auto;
-            padding-top: 20px;
+            padding-top: 15px;
             border-top: 2px solid #eee;
         }
 
@@ -642,7 +857,7 @@
         }
 
         .coupon-btn {
-            background: var(--accent);
+            background: #0CA9F8;
             color: white;
             border: none;
             padding: 8px 15px;
@@ -660,6 +875,7 @@
 
         .price-summary {
             margin-bottom: 15px;
+            color: #333;
         }
 
         .price-row {
@@ -671,41 +887,29 @@
         .price-row.total {
             font-weight: bold;
             font-size: 1.1rem;
-            color: var(--accent);
+            color: #0CA9F8;
             border-top: 1px dashed #ccc;
             padding-top: 5px;
         }
 
         .customer-form input, .customer-form select, .customer-form textarea, .auth-form input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 9px;
+            margin-bottom: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 0.85rem;
         }
 
         .order-btn, .auth-submit-btn {
             width: 100%;
-            background: var(--primary);
+            background: #0CA9F8;
             color: white;
             border: none;
-            padding: 12px;
-            font-size: 1rem;
+            padding: 10px;
+            font-size: 0.95rem;
             font-weight: bold;
             border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .auth-toggle {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        .auth-toggle span {
-            color: #0CA9F8;
-            font-weight: bold;
             cursor: pointer;
         }
 
@@ -718,42 +922,36 @@
             max-width: 450px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 30px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             z-index: 500;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid #eee;
         }
 
         .contact-section-floating h4 {
-            color: var(--accent);
-            font-size: 0.9rem;
+            color: #0CA9F8;
+            font-size: 0.85rem;
             font-weight: bold;
         }
 
         .contact-links {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .contact-btn {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 8px 15px;
+            gap: 4px;
+            padding: 6px 12px;
             border-radius: 20px;
             text-decoration: none;
             color: white;
             font-weight: bold;
-            font-size: 0.85rem;
-            transition: transform 0.2s;
-        }
-
-        .contact-btn:hover {
-            transform: scale(1.05);
+            font-size: 0.8rem;
         }
 
         .email-btn { background-color: #EA4335; }
@@ -761,23 +959,24 @@
 
         .popup-content {
             background: white;
-            padding: 30px;
+            color: #333;
+            padding: 25px;
             border-radius: 8px;
             text-align: center;
-            max-width: 350px;
+            max-width: 320px;
         }
 
         .popup-content h3 {
-            color: var(--accent);
+            color: #0CA9F8;
             margin-bottom: 10px;
         }
 
         .popup-content button {
             margin-top: 15px;
-            background: var(--accent);
+            background: #0CA9F8;
             color: white;
             border: none;
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 4px;
             cursor: pointer;
         }
@@ -786,35 +985,54 @@
 <body>
 
 <div class="page-wrapper">
-    <!-- Top Bar with Logo, Language Toggle & Auth -->
+    <!-- Top Bar with Cart Icon, Logo & Controls -->
     <div class="top-banner">
-        <div class="logo-container">
-            <div class="logo-text">Rwein.Store</div>
-            <div class="water-drop drop-1"></div>
-            <div class="water-drop drop-2"></div>
-            <div class="water-drop drop-3"></div>
-            <div class="water-drop drop-4"></div>
-            <div class="water-drop drop-5"></div>
-            <div class="water-drop drop-6"></div>
+        <div class="header-top-row">
+            <div class="logo-container">
+                <div class="logo-text">Rwein.Store</div>
+                <div class="water-drop drop-1"></div>
+                <div class="water-drop drop-2"></div>
+                <div class="water-drop drop-3"></div>
+                <div class="water-drop drop-4"></div>
+                <div class="water-drop drop-5"></div>
+                <div class="water-drop drop-6"></div>
+            </div>
+            <!-- Cart Icon Placed at Top Right -->
+            <div class="cart-icon-container" onclick="toggleCart()">
+                🛒
+                <span class="cart-badge" id="cartBadge">0</span>
+            </div>
         </div>
-        <div class="header-actions">
+        
+        <!-- Translate, Search, and Auth Buttons in 1 Row -->
+        <div class="header-controls-row">
             <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">🌐 English</button>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="পণ্যের নাম বা কোড..." onkeyup="filterProducts()">
+            </div>
             <div id="authNavContainer">
-                <button class="auth-nav-btn" id="loginNavBtn" onclick="openAuthModal('login')">লগইন / রেজিস্টার</button>
+                <button class="auth-nav-btn" id="loginNavBtn" onclick="openAuthModal('login')">লগইন</button>
             </div>
         </div>
     </div>
 
-    <!-- Main Sticky Header with Search & Cart -->
-    <header>
-        <div class="search-container">
-            <input type="text" class="search-input" id="searchInput" placeholder="পণ্যের নাম বা কোড দিয়ে খুঁজুন..." onkeyup="filterProducts()">
-        </div>
-        <div class="cart-icon-container" onclick="toggleCart()">
-            🛒
-            <span class="cart-badge" id="cartBadge">0</span>
-        </div>
-    </header>
+	<!-- NEW ARRIVAL BANNER -->
+	<div class="new-arrival-banner">
+	<!-- Added Product Image in Banner -->
+	<img src="rwein1.jpg" alt="Featured Product" id="bannerImg" class="banner-img" onclick="openDetailModal(81)">
+	
+	<div class="banner-info">
+	<span class="banner-tag" id="bannerTag">✨ New Arrival</span>
+	<h2 class="banner-title" id="bannerTitle">Women's Handbag</h2>
+	<div class="banner-pricing">
+	<span class="banner-price" id="bannerPrice">855 BDT</span>
+	<span class="banner-original-price" id="bannerOrigPrice">950 BDT</span>
+	<span class="banner-discount" id="bannerDiscount">-10% OFF</span>
+	</div>
+	</div>
+	<button class="banner-action-btn" id="bannerBtn" onclick="openDetailModal(1)">এখনই কিনুন</button>
+	</div>
+    
 
     <!-- Category Filter Bar -->
     <div class="category-bar">
@@ -836,6 +1054,40 @@
         <h3 id="lblPageViews">পেজ ভিউ (Page Views)</h3>
         <div id="visitor-count">লোড হচ্ছে...</div>
     </div>
+
+    <!-- DYNAMIC FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Rwein.store</h3>
+                <p id="footerAboutText">আপনার বিশ্বস্ত অনলাইন শপিং গন্তব্য। আমরা দিচ্ছি সাশ্রয়ী মূল্যে প্রিমিয়াম মানের পণ্য।</p>
+            </div>
+            <div class="footer-col">
+                <h4 id="footerQuickLinksTitle">দ্রুত লিংক</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="filterByCategory('All'); return false;">সবগুলো পণ্য</a></li>
+                    <li><a href="#" onclick="filterByCategory('Woman'); return false;">Woman কালেকশন</a></li>
+                    <li><a href="#" onclick="filterByCategory('Accessories'); return false;">এক্সেসরিজ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 id="footerContactTitle">যোগাযোগ</h4>
+                <p>📧 Email: mdruhu2018@gmail.com</p>
+                <p>📞 Phone: +8801919210549</p>
+            </div>
+            <div class="footer-col">
+                <h4 id="footerNewsletterTitle">নিউজলেটার</h4>
+                <p id="footerSubText">অফার এবং আপডেট পেতে সাবস্ক্রাইব করুন।</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed!');">
+                    <input type="email" class="newsletter-input" placeholder="ইমেইল দিন..." required>
+                    <button type="submit" class="newsletter-btn">Join</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> Rwein.store | Copyright @ Rwein Soft Tech</p>
+        </div>
+    </footer>
 </div>
 
 <!-- Full Detail Product View Modal -->
@@ -854,7 +1106,7 @@
         <div id="detailFreeShippingTag"></div>
         <div id="detailDescription" class="detail-description"></div>
         <input type="text" class="note-input" id="detailNoteInput" placeholder="নোট (সাইজ, কালার ইত্যাদি)">
-        <button class="add-to-cart-btn" id="detailAddToCartBtn" style="width: 100%; padding: 12px;">কার্টে যোগ করুন</button>
+        <button class="add-to-cart-btn" id="detailAddToCartBtn" style="width: 100%; padding: 10px;">কার্টে যোগ করুন</button>
     </div>
 </div>
 
@@ -871,8 +1123,8 @@
                 <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" required>
                 <button type="submit" class="auth-submit-btn" id="lblLoginBtn">লগইন</button>
             </form>
-            <div class="auth-toggle" id="lblRegisterToggle">
-                অ্যাকাউন্ট নেই? <span onclick="switchAuthMode('register')">এখানে রেজিস্ট্রেশন করুন</span>
+            <div class="auth-toggle" id="lblRegisterToggle" style="margin-top:10px; text-align:center; color:#555;">
+                অ্যাকাউন্ট নেই? <span onclick="switchAuthMode('register')" style="color:#0CA9F8; cursor:pointer; font-weight:bold;">রেজিস্ট্রেশন করুন</span>
             </div>
         </div>
 
@@ -886,8 +1138,8 @@
                 <input type="password" id="regPassword" placeholder="পাসওয়ার্ড (সর্বনিম্ন ৬ অক্ষর)" required>
                 <button type="submit" class="auth-submit-btn" id="lblRegisterBtn">রেজিস্ট্রেশন করুন</button>
             </form>
-            <div class="auth-toggle" id="lblLoginToggle">
-                আগে থেকেই অ্যাকাউন্ট আছে? <span onclick="switchAuthMode('login')">এখানে লগইন করুন</span>
+            <div class="auth-toggle" id="lblLoginToggle" style="margin-top:10px; text-align:center; color:#555;">
+                অ্যাকাউন্ট আছে? <span onclick="switchAuthMode('login')" style="color:#0CA9F8; cursor:pointer; font-weight:bold;">লগইন করুন</span>
             </div>
         </div>
     </div>
@@ -937,13 +1189,13 @@
                 </div>
             </div>
             <form class="customer-form" id="checkoutForm" onsubmit="sendOrder(event)">
-                <h4 id="lblCustomerDetails">কাস্টমার তথ্য</h4>
+                <h4 id="lblCustomerDetails" style="margin-bottom:8px;">কাস্টমার তথ্য</h4>
                 <input type="text" id="custName" placeholder="আপনার সম্পূর্ণ নাম" required>
                 <input type="tel" id="custPhone" placeholder="ফোন নম্বর" required>
                 <input type="email" id="custEmail" placeholder="ইমেইল অ্যাড্রেস (ঐচ্ছিক)">
-                <textarea id="custAddress" placeholder="বিস্তারিত ডেলিভারি ঠিকানা" rows="3" required></textarea>
+                <textarea id="custAddress" placeholder="বিস্তারিত ডেলিভারি ঠিকানা" rows="2" required></textarea>
                 
-                <label id="lblDeliveryArea" style="font-size: 0.85rem; font-weight: bold; color: #555; display: block; margin-bottom: 5px;">ডেলিভারি এরিয়া:</label>
+                <label id="lblDeliveryArea" style="font-size: 0.8rem; font-weight: bold; color: #555; display: block; margin-bottom: 4px;">ডেলিভারি এরিয়া:</label>
                 <select id="deliveryArea" onchange="updateCartUI()" required>
                     <option value="inside" id="optInside">কিশোরগঞ্জ সদর (২৫ টাকা)</option>
                     <option value="outside" id="optOutside">কিশোরগঞ্জের বাইরে (৫০ টাকা)</option>
@@ -1029,7 +1281,7 @@
             category: "Woman",
             images: ["s001.jpg", "u001.jpg", "b001.jpg"],
             image: "rwein1.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve.\n\nএই পণ্যটিতে রয়েছে প্রিমিয়াম সুতি কাপড়ের তৈরি অত্যন্ত আরামদায়ক ও সফট ফিটিং যা সারাদিন ব্যবহারে আপনাকে দেবে সম্পূর্ণ রিলাক্সেশন। এর নিখুঁত স্টিচিং ও টেকসই ফ্যাব্রিকেশন দীর্ঘস্থায়ী স্থায়িত্ব নিশ্চিত করে।"
+            description: "Comfort and Quality: The Cotton Fabric You Deserve.\n\nএই পণ্যটিতে রয়েছে প্রিমিয়াম সুতি কাপড়ের তৈরি অত্যন্ত আরামদায়ক ও সফট ফিটিং।"
         },
         {
             id: 2,
@@ -1044,46 +1296,22 @@
             description: "✨ Classic Brown Crossbody Bag – অভিজাত ও স্টাইলিশ"
         },
         {
-            id: 79,
-            code: "P-179",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s079.jpg","u079.jpg","b079.jpg"],
-            image: "rwein79.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 80,
-            code: "P-180",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s080.jpg","u080.jpg","b080.jpg"],
-            image: "rwein89.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
             id: 81,
             code: "P-181",
             name: "Women's Handbag",
-            price: 950,
+            price: 100,
             discount: 10,
             freeDelivery: false,
             category: "Woman",
             images: ["s081.jpg", "u081.jpg", "b081.jpg"],
-            image: "rwein81.jpg",
+            image: "rwein2.jpg",
             description: "Elegant women's handbag with spacious compartments and premium finish."
         },
         {
             id: 82,
             code: "P-182",
             name: "Smart Watch Strap",
-            price: 250,
+            price: 100,
             discount: 5,
             freeDelivery: false,
             category: "Accessories",
@@ -1095,696 +1323,12 @@
             id: 83,
             code: "P-183",
             name: "Unicorn LED Lamp",
-            price: 600,
+            price: 110,
             discount: 100,
             freeDelivery: false,
             category: "Home",
             images: ["s083.jpg", "u083.jpg", "b083.jpg"],
             image: "rwein83.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 84,
-            code: "P-184",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s084.jpg", "u084.jpg", "b084.jpg"],
-            image: "rwein84.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 85,
-            code: "P-185",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s085.jpg","u085.jpg","b085.jpg"],
-            image: "rwein85.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 86,
-            code: "P-186",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s086.jpg","u086.jpg","b086.jpg"],
-            image: "rwein86.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 87,
-            code: "P-187",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s087.jpg","u087.jpg","b087.jpg"],
-            image: "rwein87.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 88,
-            code: "P-188",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s088.jpg", "u088.jpg", "b088.jpg"],
-            image: "rwein88.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 89,
-            code: "P-189",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s089.jpg", "u089.jpg", "b089.jpg"],
-            image: "rwein88.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 90,
-            code: "P-190",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s090.jpg", "u090.jpg", "b090.jpg"],
-            image: "rwein90.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 91,
-            code: "P-191",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s091.jpg", "u091.jpg", "b091.jpg"],
-            image: "rwein91.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 92,
-            code: "P-192",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s092.jpg","u092.jpg","b092.jpg"],
-            image: "rwein92.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 93,
-            code: "P-193",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s093.jpg","u093.jpg","b093.jpg"],
-            image: "rwein93.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 94,
-            code: "P-194",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s094.jpg","u094.jpg","b094.jpg"],
-            image: "rwein94.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 95,
-            code: "P-195",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s095.jpg", "u095.jpg", "b095.jpg"],
-            image: "rwein95.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 96,
-            code: "P-196",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s096.jpg", "u096.jpg", "b096.jpg"],
-            image: "rwein96.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 97,
-            code: "P-197",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s097.jpg", "u097.jpg", "b097.jpg"],
-            image: "rwein97.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 98,
-            code: "P-198",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s097.jpg", "u098.jpg", "b098.jpg"],
-            image: "rwein98.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 99,
-            code: "P-199",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s099.jpg","u099.jpg","b099.jpg"],
-            image: "rwein99.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 100,
-            code: "P-200",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s100.jpg","u100.jpg","b100.jpg"],
-            image: "rwein100.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 101,
-            code: "P-201",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s101.jpg","u101.jpg","b101.jpg"],
-            image: "rwein101.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 102,
-            code: "P-202",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s102.jpg", "u102.jpg", "b102.jpg"],
-            image: "rwein102.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 103,
-            code: "P-203",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s103.jpg", "u103.jpg", "b103.jpg"],
-            image: "rwein103.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 104,
-            code: "P-204",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s104.jpg", "u104.jpg", "b104.jpg"],
-            image: "rwein104.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 105,
-            code: "P-205",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s105.jpg", "u105.jpg", "b105.jpg"],
-            image: "rwein105.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 106,
-            code: "P-206",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s106.jpg","u106.jpg", "b106.jpg"],
-            image: "rwein106.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 107,
-            code: "P-207",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s107.jpg","u107.jpg", "b107.jpg"],
-            image: "rwein107.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 108,
-            code: "P-208",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s108.jpg","u108.jpg", "b108.jpg"],
-            image: "rwein108.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 109,
-            code: "P-209",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s109.jpg", "u109.jpg", "b108.jpg"],
-            image: "rwein109.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 110,
-            code: "P-210",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s110.jpg", "u110.jpg", "b110.jpg"],
-            image: "rwein110.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 111,
-            code: "P-211",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s111.jpg", "u111.jpg", "b111.jpg"],
-            image: "rwein111.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 112,
-            code: "P-212",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s112.jpg", "u112.jpg", "b112.jpg"],
-            image: "rwein112.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 113,
-            code: "P-213",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s113.jpg","u113.jpg", "b113.jpg"],
-            image: "rwein113.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 114,
-            code: "P-214",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s114.jpg","u114.jpg", "b114.jpg"],
-            image: "rwein114.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 115,
-            code: "P-215",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s115.jpg","u115.jpg", "b115.jpg"],
-            image: "rwein115.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 116,
-            code: "P-216",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s116.jpg", "u116.jpg", "b116.jpg"],
-            image: "rwein116.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 117,
-            code: "P-217",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s117.jpg", "u117.jpg", "b117.jpg"],
-            image: "rwein117.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 118,
-            code: "P-218",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s118.jpg", "u118.jpg", "b118.jpg"],
-            image: "rwein118.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 119,
-            code: "P-219",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s119.jpg", "u119.jpg", "b119.jpg"],
-            image: "rwein119.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 120,
-            code: "P-220",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s120.jpg","u120.jpg", "b120.jpg"],
-            image: "rwein120.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 121,
-            code: "P-221",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s121.jpg","u121.jpg", "b121.jpg"],
-            image: "rwein121.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 122,
-            code: "P-222",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s122.jpg","u122.jpg", "b122.jpg"],
-            image: "rwein122.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 123,
-            code: "P-223",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s123.jpg", "u123.jpg", "b123.jpg"],
-            image: "rwein123.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 124,
-            code: "P-224",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s124.jpg", "u124.jpg", "b124.jpg"],
-            image: "rwein5.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 125,
-            code: "P-225",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s125.jpg", "u125.jpg", "b125.jpg"],
-            image: "rwein125.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 126,
-            code: "P-226",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s126.jpg", "u126.jpg", "b126.jpg"],
-            image: "rwein126.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 127,
-            code: "P-227",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s127.jpg","u127.jpg", "b127.jpg"],
-            image: "rwein127.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 128,
-            code: "P-228",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s128.jpg","u128.jpg", "b128.jpg"],
-            image: "rwein128.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 129,
-            code: "P-229",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s129.jpg","u129.jpg", "b129.jpg"],
-            image: "rwein129.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 130,
-            code: "P-230",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s130.jpg", "u120.jpg", "b130.jpg"],
-            image: "rwein130.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 131,
-            code: "P-231",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s131.jpg", "u131.jpg", "b131.jpg"],
-            image: "rwein131.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 132,
-            code: "P-232",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s132.jpg", "u132.jpg", "b132.jpg"],
-            image: "rwein132.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 133,
-            code: "P-233",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s133.jpg", "u133.jpg", "b133.jpg"],
-            image: "rwein133.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 134,
-            code: "P-234",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s134.jpg","u134.jpg", "b134.jpg"],
-            image: "rwein134.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve."
-        },
-        {
-            id: 135,
-            code: "P-235",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s135.jpg","u135.jpg", "b135.jpg"],
-            image: "rwein135.jpg",
-            description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
-        },
-        {
-            id: 136,
-            code: "P-236",
-            name: "Indian Copy Stitch Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s136.jpg","u136.jpg", "b136.jpg"],
-            image: "rwein136.jpg",
-            description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
-        },
-        {
-            id: 137,
-            code: "P-237",
-            name: "Women's Handbag",
-            price: 950,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s137.jpg", "u137.jpg", "b137.jpg"],
-            image: "rwein137.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
-        },
-        {
-            id: 138,
-            code: "P-238",
-            name: "Smart Watch Strap",
-            price: 250,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s138.jpg", "u138.jpg", "b138.jpg"],
-            image: "rwein138.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
-        },
-        {
-            id: 139,
-            code: "P-239",
-            name: "Unicorn LED Lamp",
-            price: 600,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s139.jpg", "u139.jpg", "b139.jpg"],
-            image: "rwein139.jpg",
-            description: "Cute decorative night light lamp for rooms."
-        },
-        {
-            id: 140,
-            code: "P-240",
-            name: "Unicorn LED Lamp",
-            price: 100,
-            discount: 1,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s140.jpg", "u140.jpg", "b140.jpg"],
-            image: "rwein140.jpg",
             description: "Cute decorative night light lamp for rooms."
         }
     ];
@@ -1793,7 +1337,7 @@
     const i18n = {
         bn: {
             langToggle: "🌐 English",
-            searchPlaceholder: "পণ্যের নাম বা কোড দিয়ে খুঁজুন...",
+            searchPlaceholder: "পণ্যের নাম বা কোড...",
             catAll: "সবগুলো (All)",
             catMan: "পুরুষ (Man)",
             catWoman: "নারী (Woman)",
@@ -1805,9 +1349,9 @@
             freeDeliveryEligible: "🚚 ফ্রি ডেলিভারি অফার",
             notePlaceholder: "নোট (সাইজ, কালার ইত্যাদি)",
             addToCart: "কার্টে যোগ করুন",
-            noProducts: "এই সিলেক্টেড ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি।",
+            noProducts: "কোনো পণ্য পাওয়া যায়নি।",
             cartTitle: "আপনার শপিং কার্ট",
-            emptyCart: "আপনার কার্ট বর্তমানে খালি।",
+            emptyCart: "আপনার কার্ট খালি।",
             subtotal: "সাবটোটাল:",
             discount: "ছাড়",
             deliveryCharge: "ডেলিভারি চার্জ:",
@@ -1818,23 +1362,30 @@
             emailPlaceholder: "ইমেইল অ্যাড্রেস (ঐচ্ছিক)",
             addressPlaceholder: "বিস্তারিত ডেলিভারি ঠিকানা",
             deliveryAreaLabel: "ডেলিভারি এরিয়া:",
-            optInside: "কিশোরগঞ্জ (২৫ টাকা)",
+            optInside: "কিশোরগঞ্জ সদর (২৫ টাকা)",
             optOutside: "কিশোরগঞ্জের বাইরে (৫০ টাকা)",
             submitOrder: "হোয়াটসঅ্যাপে অর্ডার সাবমিট করুন",
             couponPlaceholder: "কুপন কোড দিন",
             applyCoupon: "এপ্লাই",
-            loginNav: "লগইন / রেজিস্টার",
+            loginNav: "লগইন",
             logoutNav: "লগআউট",
             contactUs: "যোগাযোগ করুন:",
             thankYouTitle: "অর্ডারের জন্য ধন্যবাদ!",
             thankYouSub: "আমরা দ্রুত আপনার সাথে যোগাযোগ করব।",
             closeBtn: "বন্ধ করুন",
             prev: "পূর্ববর্তী",
-            next: "পরবর্তী"
+            next: "পরবর্তী",
+            bannerTag: "✨ নতুন কালেকশন",
+            bannerBtn: "এখনই কিনুন",
+            footerAboutText: "আপনার বিশ্বস্ত অনলাইন শপিং গন্তব্য। আমরা দিচ্ছি সাশ্রয়ী মূল্যে প্রিমিয়াম মানের পণ্য।",
+            footerQuickLinksTitle: "দ্রুত লিংক",
+            footerContactTitle: "যোগাযোগ",
+            footerNewsletterTitle: "নিউজলেটার",
+            footerSubText: "অফার এবং আপডেট পেতে সাবস্ক্রাইব করুন।"
         },
         en: {
             langToggle: "🌐 বাংলা",
-            searchPlaceholder: "Search by product name or code...",
+            searchPlaceholder: "Search by product name...",
             catAll: "All Products",
             catMan: "Man",
             catWoman: "Woman",
@@ -1846,9 +1397,9 @@
             freeDeliveryEligible: "🚚 Free Delivery Eligible",
             notePlaceholder: "Note (Size, Color, etc.)",
             addToCart: "Add to Cart",
-            noProducts: "No products found in this selection.",
+            noProducts: "No products found.",
             cartTitle: "Your Shopping Cart",
-            emptyCart: "Your cart is currently empty.",
+            emptyCart: "Your cart is empty.",
             subtotal: "Subtotal:",
             discount: "Discount",
             deliveryCharge: "Delivery Charge:",
@@ -1864,14 +1415,21 @@
             submitOrder: "Submit Order via WhatsApp",
             couponPlaceholder: "Enter coupon code",
             applyCoupon: "Apply",
-            loginNav: "Login / Register",
+            loginNav: "Login",
             logoutNav: "Logout",
             contactUs: "Contact Us:",
             thankYouTitle: "Thank You For Your Order!",
             thankYouSub: "We will respond as soon as possible.",
             closeBtn: "Close",
             prev: "Previous",
-            next: "Next"
+            next: "Next",
+            bannerTag: "✨ New Arrival",
+            bannerBtn: "Buy Now",
+            footerAboutText: "Your trusted online shopping store for high-quality products at affordable prices.",
+            footerQuickLinksTitle: "Quick Links",
+            footerContactTitle: "Contact Us",
+            footerNewsletterTitle: "Newsletter",
+            footerSubText: "Subscribe to get updates and special offers."
         }
     };
 
@@ -1913,6 +1471,14 @@
         document.getElementById('lblClosePopup').innerText = lang.closeBtn;
         document.getElementById('detailNoteInput').placeholder = lang.notePlaceholder;
         document.getElementById('detailAddToCartBtn').innerText = lang.addToCart;
+        document.getElementById('bannerTag').innerText = lang.bannerTag;
+        document.getElementById('bannerBtn').innerText = lang.bannerBtn;
+
+        document.getElementById('footerAboutText').innerText = lang.footerAboutText;
+        document.getElementById('footerQuickLinksTitle').innerText = lang.footerQuickLinksTitle;
+        document.getElementById('footerContactTitle').innerText = lang.footerContactTitle;
+        document.getElementById('footerNewsletterTitle').innerText = lang.footerNewsletterTitle;
+        document.getElementById('footerSubText').innerText = lang.footerSubText;
     }
 
     let currentDetailImages = [];
@@ -2029,7 +1595,7 @@
                 document.getElementById('visitor-count').textContent = '1';
             }
         } catch (error) {
-            document.getElementById('visitor-count').textContent = 'Unavailable';
+            document.getElementById('visitor-count').textContent = '1';
         }
     }
 
@@ -2232,22 +1798,24 @@
         setTimeout(() => badge.classList.remove('cart-bump'), 200);
     }
 
+    // COUPON APPLICATION FUNCTION (ROBUST & CASE-INSENSITIVE)
     window.applyCoupon = function () {
-        const codeInput = document.getElementById('couponInput').value.trim().toUpperCase();
+        const inputElem = document.getElementById('couponInput');
+        const codeInput = inputElem ? inputElem.value.trim().toUpperCase() : '';
         const msgContainer = document.getElementById('couponMessage');
 
         if (codeInput === "RWEINRC") {
             activeCoupon = { code: 'RWEINRC', type: 'percent', value: 35 };
             msgContainer.style.color = "#2a9d8f";
-            msgContainer.innerText = "✓ Coupon 'RWEINRC' applied successfully!";
+            msgContainer.innerText = "✓ Coupon 'RWEINRC' applied! (35% OFF)";
         } else if (codeInput === "RWEINSD") {
             activeCoupon = { code: 'RWEINSD', type: 'percent', value: 50 };
             msgContainer.style.color = "#2a9d8f";
-            msgContainer.innerText = "✓ Coupon 'RWEINSD' applied successfully!";
+            msgContainer.innerText = "✓ Coupon 'RWEINSD' applied! (50% OFF)";
         } else if (codeInput === "RWEINFD") {
             activeCoupon = { code: 'RWEINFD', type: 'free_delivery' };
             msgContainer.style.color = "#2a9d8f";
-            msgContainer.innerText = "✓ Coupon 'RWEINFD' applied successfully (Free Delivery)!";
+            msgContainer.innerText = "✓ Coupon 'RWEINFD' applied! (Free Delivery)";
         } else if (codeInput === "") {
             activeCoupon = null;
             msgContainer.innerText = "";
@@ -2259,6 +1827,7 @@
         updateCartUI();
     };
 
+    // CART UI UPDATE & CALCULATION FUNCTION
     window.updateCartUI = function () {
         const lang = i18n[currentLang];
         const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -2266,7 +1835,7 @@
         const container = document.getElementById('cartItemsContainer');
         
         if (cart.length === 0) {
-            container.innerHTML = `<p style="text-align:center; padding: 20px;">${lang.emptyCart}</p>`;
+            container.innerHTML = `<p style="text-align:center; padding: 20px; color:#666;">${lang.emptyCart}</p>`;
             document.getElementById('subtotalAmount').innerText = '0 BDT';
             document.getElementById('discountRow').style.display = 'none';
             document.getElementById('deliveryAmount').innerText = '25 BDT';
@@ -2282,16 +1851,16 @@
 
             return `
                 <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
                     <div class="cart-item-info">
                         <div class="cart-item-code">${lang.code} ${item.code}</div>
                         <div class="cart-item-title">${item.name}</div>
-                        ${item.freeDelivery ? `<div style="color: #2a9d8f; font-size: 0.75rem; font-weight: bold;">${lang.freeDeliveryEligible}</div>` : ''}
                         ${item.note ? `<div class="cart-item-note">Note: ${item.note}</div>` : ''}
-                        <div>${item.finalPrice} BDT × ${item.qty} = ${itemTotal} BDT</div>
+                        <div style="font-size:0.8rem; color:#444;">${item.finalPrice} BDT × ${item.qty} = <strong>${itemTotal} BDT</strong></div>
                     </div>
                     <div class="quantity-controls">
                         <button onclick="changeQty(${index}, -1)">-</button>
-                        <span>${item.qty}</span>
+                        <span style="font-size:0.85rem; font-weight:bold;">${item.qty}</span>
                         <button onclick="changeQty(${index}, 1)">+</button>
                     </div>
                 </div>
@@ -2325,7 +1894,7 @@
         document.getElementById('subtotalAmount').innerText = `${subtotal} BDT`;
         document.getElementById('deliveryAmount').innerText = currentDeliveryCharge === 0 ? '0 BDT (Free)' : `${currentDeliveryCharge} BDT`;
         document.getElementById('totalAmount').innerText = `${finalTotal} BDT`;
-    }
+    };
 
     window.changeQty = function (index, delta) {
         if (cart[index]) {
@@ -2380,7 +1949,7 @@
         if (activeCoupon && activeCoupon.type === 'percent') {
             message += `*Discount (${activeCoupon.code} - ${activeCoupon.value}%):* -${discountAmountValue} BDT\n`;
         }
-        message += `*Delivery Charge (${deliveryLocationText}):* ${finalDelivery} BDT\n*Grand Total:* ${grandTotal} BDT`;
+        message += `*Delivery Charge:* ${finalDelivery} BDT\n*Grand Total:* ${grandTotal} BDT`;
         
         if (activeCoupon) {
             message += `\n*Applied Coupon:* ${activeCoupon.code}`;
@@ -2402,6 +1971,8 @@
     window.closePopup = function () {
         document.getElementById('thankYouPopup').classList.remove('open');
     };
+
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     // Initialize Store UI & Local Products
     updateUIElements();
