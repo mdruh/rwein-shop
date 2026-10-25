@@ -962,7 +962,56 @@
     let activeCoupon = null;
 
     // Google Sheets Published HTML URL
-    const GOOGLE_SHEET_PUB_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpsa0R-H88SJng5fvWpuvUeaYHIiJ-C1KbAa7Bhr1bZ-QFjxfpDx--VcvNzRKy129BWFLMmjxYInqo/pubhtml";
+    
+// Google Sheets CSV Export URL (Make sure your sheet is published as .csv)
+    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpsa0R-H88SJng5fvWpuvUeaYHIiJ-C1KbAa7Bhr1bZ-QFjxfpDx--VcvNzRKy129BWFLMmjxYInqo/pub?output=csv";
+
+    async function loadProductsFromSheet() {
+        try {
+            const response = await fetch(GOOGLE_SHEET_CSV_URL);
+            const csvText = await response.text();
+            
+            const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
+            
+            if (lines.length < 2) {
+                renderProducts([]);
+                return;
+            }
+
+            // Extract headers from the first row
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+
+            products = lines.slice(1).map((line, index) => {
+                const cells = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                let rowData = {};
+                headers.forEach((header, i) => {
+                    rowData[header] = cells[i] || '';
+                });
+
+                const mainImg = rowData.image || '';
+                const extraImgs = rowData.images ? rowData.images.split(',').map(s => s.trim()) : [];
+
+                return {
+                    id: Number(rowData.id) || (index + 1),
+                    code: rowData.code || `P-${100 + index}`,
+                    name: rowData.name || 'Unnamed Product',
+                    price: Number(rowData.price) || 0,
+                    discount: Number(rowData.discount) || 0,
+                    freeDelivery: rowData.freedelivery ? rowData.freedelivery.toLowerCase() === 'true' : false,
+                    category: rowData.category || 'All',
+                    image: mainImg,
+                    images: extraImgs.length > 0 ? extraImgs : [mainImg],
+                    description: rowData.description || ''
+                };
+            }).filter(p => p.name && p.price > 0);
+
+            renderProducts(products);
+        } catch (error) {
+            console.error("Error loading products from Google Sheets:", error);
+            renderProducts([]);
+        }
+    }
+    
 
     // Language Dictionary
     const i18n = {
