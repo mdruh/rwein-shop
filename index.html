@@ -964,7 +964,7 @@
     // Google Sheets Published HTML URL
     
 // Google Sheets CSV Export URL (Make sure your sheet is published as .csv)
-    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpsa0R-H88SJng5fvWpuvUeaYHIiJ-C1KbAa7Bhr1bZ-QFjxfpDx--VcvNzRKy129BWFLMmjxYInqo/pub?output=csv";
+    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpsa0R-H88SJng5fvWpuvUeaYHIiJ-C1KbAa7Bhr1bZ-QFjxfpDx--VcvNzRKy129BWFLMmjxYInqo/pub?gid=0&single=true&output=csv";
 
     async function loadProductsFromSheet() {
         try {
@@ -973,7 +973,7 @@
             
             const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
             
-            if (lines.length < 2) {
+            if (lines.length <= 1) {
                 renderProducts([]);
                 return;
             }
