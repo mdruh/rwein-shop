@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>রিওয়াইন অনলাইন স্টোরrwein.store</title>
+    <title>রিওয়াইন অনলাইন স্টোর</title>
     <meta name="mobile-web-app-capable" content="Rwein Store">
     <meta name="apple-mobile-web-app-capable" content="Rwein Store">
     <meta name="apple-mobile-web-app-title" content="Rwein Store">
-    <link rel="canonical" href="https://rwein.store/" />
-	<meta name="description" content="rwein.store Discover trendy, high-quality clothing and apparel at rwein.store. Shop our latest collection today with fast delivery and great prices!" />
+    
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -59,7 +58,7 @@
         }
 
         .logo-container {
-        	width:18rem;
+            width:18rem;
             height: 4rem;
             position: relative;
             padding: 3px 20px;
@@ -81,15 +80,16 @@
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
             z-index: 2;
         }
+
         .water-drop {
-        position: absolute;
-        width: 8px;
-        height: 5px;
-        background: white;
-        border-radius: 50%;
-        box-shadow: 0 0 8px #00d2ff, 0 0 12px #ffffff;
-        opacity: 0;
-        z-index: 3;
+            position: absolute;
+            width: 8px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00d2ff, 0 0 12px #ffffff;
+            opacity: 0;
+            z-index: 3;
         }
         
         .drop-1  { top: -3px; left: 10px;  animation: slideRightAndFall 3s linear infinite 0.0s; }
@@ -100,43 +100,29 @@
         .drop-6  { top: -3px; left: 135px; animation: slideRightAndFall 3s linear infinite 2.5s; }
         
         @keyframes slideRightAndFall {
-        0% { transform: translate(0, 0); opacity: 0; }
-        10% { opacity: 1; }
-        40% { transform: translate(80px, 0); opacity: 1; }
-        55% { transform: translate(100px, 15px); opacity: 1; }
-        85% { transform: translate(100px, 80px); opacity: 1; }
-        100% { transform: translate(100px, 100px); opacity: 0; }
+            0% { transform: translate(0, 0); opacity: 0; }
+            10% { opacity: 1; }
+            40% { transform: translate(80px, 0); opacity: 1; }
+            55% { transform: translate(100px, 15px); opacity: 1; }
+            85% { transform: translate(100px, 80px); opacity: 1; }
+            100% { transform: translate(100px, 100px); opacity: 0; }
         }
+
         .cart-icon-container {
-        position: fixed;        /* Keeps the cart fixed on the screen during scroll */
-               /* Distance from the bottom of the screen */
-        right: 35px;            /* Distance from the right of the screen */
-        z-index: 9999;          /* Ensures it appears in front of all other elements */
-        cursor: pointer;
-        font-size: 1.8rem;
-        background: white;
-        padding: 12px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adds a floating shadow effect */
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        
-      /*  .cart-icon-container {
             position: fixed;
+            right: 35px;
+            z-index: 9999;
             cursor: pointer;
             font-size: 1.8rem;
             background: white;
-            padding: 8px 12px;
+            padding: 12px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease;
-        }*/
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
         
         .cart-icon-container:hover {
             transform: scale(1.1);
@@ -160,7 +146,6 @@
             transform: scale(1.3);
         }
 
-        /* 3 Options in 1 Row: Lang, Search, Auth */
         .header-controls-row {
             display: flex;
             align-items: center;
@@ -220,75 +205,45 @@
             background: #e0f2fe;
         }
 
-        /* Category Bar */
-        .category-bar {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 12px 20px;
-            background: rgba(0, 0, 0, 0.08);
-            position: sticky;
-            top: 0;
-            z-index: 99;
-            backdrop-filter: blur(5px);
+        /* 8-BANNER SLIDER CAROUSEL STYLES */
+        .banner-carousel-container {
+            position: relative;
+            margin: 15px 20px;
         }
 
-        .category-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: #ffffff;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .category-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .category-btn.active {
-            background: #ffffff;
-            color: #0CA9F8;
-            border-color: #ffffff;
-        }
-
-        
-        /* NEW ARRIVAL BANNER FULL BACKGROUND IMAGE */
         .new-arrival-banner {
-        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('rwein1.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        margin: 15px 20px;
-        padding: 25px 20px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        flex-wrap: wrap;
+            background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('rwein1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            flex-wrap: wrap;
+            transition: background-image 0.5s ease-in-out;
         }
-		.banner-img {
-		width:100px;
-		height:100px;
-		object-fit: cover;
-		border-radius: 10px;
-		cursor: pointer;
-		border: 2px solid rgba(255, 255, 255, 0.6);
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-		transition: transform 0.2s ease;
-		}
-		
-		.banner-img:hover {
-		transform: scale(1.05);
-		}
+
+        .banner-img {
+            width:100px;
+            height:100px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease;
+        }
+        
+        .banner-img:hover {
+            transform: scale(1.05);
+        }
+
         .banner-info {
             flex: 1;
             min-width: 200px;
@@ -356,6 +311,89 @@
         .banner-action-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Banner Carousel Dots & Controls */
+        .banner-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .banner-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .banner-prev { left: 5px; }
+        .banner-next { right: 5px; }
+
+        .banner-dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .banner-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .banner-dot.active {
+            background: #ffffff;
+            width: 20px;
+            border-radius: 10px;
+        }
+
+        /* Category Bar */
+        .category-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            backdrop-filter: blur(5px);
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .category-btn.active {
+            background: #ffffff;
+            color: #0CA9F8;
+            border-color: #ffffff;
         }
 
         /* Products Grid */
@@ -782,7 +820,6 @@
             background: none;
         }
 
-        /* CART ITEM STYLING FIX */
         .cart-item {
             display: flex;
             justify-content: space-between;
@@ -1017,29 +1054,34 @@
         </div>
     </div>
 
-	<!-- NEW ARRIVAL BANNER -->
-	<div class="new-arrival-banner">
-	<!-- Added Product Image in Banner -->
-	<img src="rwein1.jpg" alt="Featured Product" id="bannerImg" class="banner-img" onclick="openDetailModal(81)">
-	
-	<div class="banner-info">
-	<span class="banner-tag" id="bannerTag">✨ New Arrival</span>
-	<h2 class="banner-title" id="bannerTitle">Women's Handbag</h2>
-	<div class="banner-pricing">
-	<span class="banner-price" id="bannerPrice">855 BDT</span>
-	<span class="banner-original-price" id="bannerOrigPrice">950 BDT</span>
-	<span class="banner-discount" id="bannerDiscount">-10% OFF</span>
-	</div>
-	</div>
-	<button class="banner-action-btn" id="bannerBtn" onclick="openDetailModal(1)">এখনই কিনুন</button>
-	</div>
-    
+    <!-- 8-BANNER CAROUSEL SECTION ABOVE CATEGORY BAR (AUTOPLAYS EVERY 2 SECONDS) -->
+    <div class="banner-carousel-container">
+        <button class="banner-nav-btn banner-prev" onclick="prevBannerSlide()">&#10094;</button>
+        <div class="new-arrival-banner" id="bannerSlide">
+            <img src="rwein1.jpg" alt="Featured Product" id="bannerImg" class="banner-img" onclick="openBannerDetail()">
+            
+            <div class="banner-info">
+                <span class="banner-tag" id="bannerTag">✨ New Arrival</span>
+                <h2 class="banner-title" id="bannerTitle">Women's Handbag</h2>
+                <div class="banner-pricing">
+                    <span class="banner-price" id="bannerPrice">855 BDT</span>
+                    <span class="banner-original-price" id="bannerOrigPrice">950 BDT</span>
+                    <span class="banner-discount" id="bannerDiscount">-10% OFF</span>
+                </div>
+            </div>
+            <button class="banner-action-btn" id="bannerBtn" onclick="openBannerDetail()">এখনই কিনুন</button>
+        </div>
+        <button class="banner-nav-btn banner-next" onclick="nextBannerSlide()">&#10095;</button>
+        
+        <div class="banner-dots-container" id="bannerDots"></div>
+    </div>
 
-    <!-- Category Filter Bar -->
+    <!-- Category Filter Bar (Includes Kids) -->
     <div class="category-bar">
         <button class="category-btn active" id="catAll" onclick="filterByCategory('All', this)">সবগুলো (All)</button>
         <button class="category-btn" id="catMan" onclick="filterByCategory('Man', this)">পুরুষ (Man)</button>
         <button class="category-btn" id="catWoman" onclick="filterByCategory('Woman', this)">নারী (Woman)</button>
+        <button class="category-btn" id="catKids" onclick="filterByCategory('Kids', this)">কিডস (Kids)</button>
         <button class="category-btn" id="catHome" onclick="filterByCategory('Home', this)">হোম এন্ড লিভিং</button>
         <button class="category-btn" id="catAcc" onclick="filterByCategory('Accessories', this)">এক্সেসরিজ</button>
     </div>
@@ -1068,6 +1110,7 @@
                 <ul class="footer-links">
                     <li><a href="#" onclick="filterByCategory('All'); return false;">সবগুলো পণ্য</a></li>
                     <li><a href="#" onclick="filterByCategory('Woman'); return false;">Woman কালেকশন</a></li>
+                    <li><a href="#" onclick="filterByCategory('Kids'); return false;">Kids কালেকশন</a></li>
                     <li><a href="#" onclick="filterByCategory('Accessories'); return false;">এক্সেসরিজ</a></li>
                 </ul>
             </div>
@@ -1266,71 +1309,456 @@
     let currentLang = 'bn'; 
     let currentPage = 1;
     let filteredProductsList = [];
-    
-    // Active Coupon State
     let activeCoupon = null;
 
-    // CONSOLIDATED PRODUCT LIST
+    // 8 BANNERS CONFIGURATION
+    const bannerItems = [
+        {
+            tag: "✨ New Arrival",
+            tagBn: "✨ নতুন কালেকশন",
+            title: "Women's Handbag",
+            price: 855,
+            origPrice: 950,
+            discount: 10,
+            image: "rwein1.jpg",
+            productId: 1
+        },
+        {
+            tag: "🔥 Hot Sale",
+            tagBn: "🔥 হট সেল",
+            title: "Wide Strap Goddy",
+            price: 99,
+            origPrice: 120,
+            discount: 18,
+            image: "rwein2.jpg",
+            productId: 5
+        },
+        {
+            tag: "⚡ Super Deal",
+            tagBn: "⚡ সুপার ডিল",
+            title: "Unicorn LED Lamp",
+            price: 110,
+            origPrice: 220,
+            discount: 50,
+            image: "rwein83.jpg",
+            productId: 7
+        },
+        {
+            tag: "🧸 Kids Special",
+            tagBn: "🧸 কিডস স্পেশাল",
+            title: "Cute Kids Plush Toy",
+            price: 150,
+            origPrice: 200,
+            discount: 25,
+            image: "rwein1.jpg",
+            productId: 11
+        },
+        {
+            tag: "⌚ Trending",
+            tagBn: "⌚ ট্রেন্ডিং",
+            title: "Smart Watch Strap",
+            price: 95,
+            origPrice: 100,
+            discount: 5,
+            image: "rwein1.jpg",
+            productId: 13
+        },
+        {
+            tag: "⭐ Best Seller",
+            tagBn: "⭐ বেস্ট সেলার",
+            title: "Pure Cotton Bra",
+            price: 110,
+            origPrice: 130,
+            discount: 15,
+            image: "rwein1.jpg",
+            productId: 1
+        },
+        {
+            tag: "🎁 Exclusive",
+            tagBn: "🎁 এক্সক্লুসিভ",
+            title: "Kids Fashion Shoes",
+            price: 280,
+            origPrice: 350,
+            discount: 20,
+            image: "rwein2.jpg",
+            productId: 4
+        },
+        {
+            tag: "💥 Limited Offer",
+            tagBn: "💥 লিমিটেড অফার",
+            title: "Home Decor Light",
+            price: 180,
+            origPrice: 250,
+            discount: 28,
+            image: "rwein83.jpg",
+            productId: 1
+        }
+    ];
+
+    let currentBannerIndex = 0;
+    let bannerInterval = null;
+
+    // CONSOLIDATED PRODUCT LIST WITH KIDS CATEGORY ADDED
     let products = [
         {
-            id: 1,
-            code: "P-101",
-            name: "Pure Cotton Fabric Bra",
-            price: 110,
-            discount: 0,
-            freeDelivery: true,
-            category: "Woman",
-            images: ["s001.jpg", "u001.jpg", "b001.jpg"],
-            image: "rwein1.jpg",
-            description: "Comfort and Quality: The Cotton Fabric You Deserve.\n\nএই পণ্যটিতে রয়েছে প্রিমিয়াম সুতি কাপড়ের তৈরি অত্যন্ত আরামদায়ক ও সফট ফিটিং।"
+        id: 1,
+        code: "P-101",
+        name: "নতুন হুডি-শার্ট (Hooded Shirt)",
+        price: 360,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s001.jpg", "u001.jpg", "b001.jpg"],
+        image: "rwein1.jpg",
+        description: "আপনার বাচ্চার উইন্টার স্টাইলকে আরও আকর্ষণীয় করতেRwein.Store নিয়ে এসেছে প্রিমিয়াম কোয়ালিটির স্টাইলিশ হুডেড শার্ট।  বয়স সবোর্চ্চ ১২ বছরের বাচ্চাদের জন"
         },
         {
-            id: 2,
-            code: "P-102",
-            name: "Wide Strap Goddy",
-            price: 99,
-            discount: 0,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s002.jpg", "u002.jpg", "b002.jpg"],
-            image: "rwein2.jpg",
-            description: "✨ Classic Brown Crossbody Bag – অভিজাত ও স্টাইলিশ"
+        id: 2,
+        code: "P-102",
+        name: "Wide Strap Goddy",
+        price: 99,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s002.jpg", "u002.jpg", "b002.jpg"],
+        image: "rwein2.jpg",
+        description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
         },
         {
-            id: 81,
-            code: "P-181",
-            name: "Women's Handbag",
-            price: 100,
-            discount: 10,
-            freeDelivery: false,
-            category: "Woman",
-            images: ["s081.jpg", "u081.jpg", "b081.jpg"],
-            image: "rwein2.jpg",
-            description: "Elegant women's handbag with spacious compartments and premium finish."
+        id: 3,
+        code: "P-103",
+        name: "নতুন হুডি-শার্ট (Hooded Shirt)",
+        price: 360,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s003.jpg","u003.jpg","b003.jpg"],
+        image: "rwein3.jpg",
+        description: "আপনার বাচ্চার উইন্টার স্টাইলকে আরও আকর্ষণীয় করতেRwein.Store নিয়ে এসেছে প্রিমিয়াম কোয়ালিটির স্টাইলিশ হুডেড শার্ট।  বয়স সবোর্চ্চ ১২ বছরের বাচ্চাদের জন"
         },
         {
-            id: 82,
-            code: "P-182",
-            name: "Smart Watch Strap",
-            price: 100,
-            discount: 5,
-            freeDelivery: false,
-            category: "Accessories",
-            images: ["s082.jpg", "u082.jpg", "b082.jpg"],
-            image: "rwein82.jpg",
-            description: "Durable silicone replacement strap for smartwatches."
+        id: 4,
+        code: "P-104",
+        name: "Women's Handbag",
+        price: 950,
+        discount: 10,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s004.jpg", "u004.jpg", "b004.jpg"],
+        image: "rwein4.jpg",
+        description: "Elegant women's handbag with spacious compartments and premium finish."
         },
         {
-            id: 83,
-            code: "P-183",
-            name: "Unicorn LED Lamp",
-            price: 110,
-            discount: 100,
-            freeDelivery: false,
-            category: "Home",
-            images: ["s083.jpg", "u083.jpg", "b083.jpg"],
-            image: "rwein83.jpg",
-            description: "Cute decorative night light lamp for rooms."
+        id: 5,
+        code: "P-105",
+        name: "Kids Long Pant",
+        price: 320,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s005.jpg", "u005.jpg", "b005.jpg"],
+        image: "rwein5.jpg",
+        description: "স্টাইল ও কমফোর্টের পারফেক্ট কম্বিনেশনে Rwein.Store নিয়ে এলো আকর্ষণীয় ডিজাইনের স্টাইলিশ ডেনিম জিন্স!"
+        },
+        {
+        id: 6,
+        code: "P-106",
+        name: "Unicorn LED Lamp",
+        price: 600,
+        discount: 100,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s006.jpg", "u006.jpg", "b006.jpg"],
+        image: "rwein6.jpg",
+        description: "Cute decorative night light lamp for rooms."
+        },
+        {
+        id: 7,
+        code: "P-107",
+        name: "Unicorn LED Lamp",
+        price: 320,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s007.jpg", "u007.jpg", "b007.jpg"],
+        image: "rwein7.jpg",
+        description: "স্টাইল ও কমফোর্টের পারফেক্ট কম্বিনেশনে Rwein.Store নিয়ে এলো আকর্ষণীয় ডিজাইনের স্টাইলিশ ডেনিম জিন্স!"
+        },
+        {
+        id: 8,
+        code: "P-108",
+        name: "Pure Cotton Fabric Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s008.jpg","u008.jpg","b008.jpg"],
+        image: "rwein8.jpg",
+        description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+        id: 9,
+        code: "P-109",
+        name: "নতুন হুডি-শার্ট (Hooded Shirt)",
+        price: 360,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s009.jpg","u009.jpg","b009.jpg"],
+        image: "rwein9.jpg",
+        description: "আপনার বাচ্চার উইন্টার স্টাইলকে আরও আকর্ষণীয় করতেRwein.Store নিয়ে এসেছে প্রিমিয়াম কোয়ালিটির স্টাইলিশ হুডেড শার্ট।  বয়স সবোর্চ্চ ১২ বছরের বাচ্চাদের জন"
+        },
+        {
+        id: 10,
+        code: "P-110",
+        name: "Indian Copy Stitch Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s010.jpg","u010.jpg","b010.jpg"],
+        image: "rwein10.jpg",
+        description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+        id: 11,
+        code: "P-111",
+        name: "নতুন হুডি-শার্ট (Hooded Shirt)",
+        price: 360,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s011.jpg", "u011.jpg", "b011.jpg"],
+        image: "rwein11.jpg",
+        description: "আপনার বাচ্চার উইন্টার স্টাইলকে আরও আকর্ষণীয় করতেRwein.Store নিয়ে এসেছে প্রিমিয়াম কোয়ালিটির স্টাইলিশ হুডেড শার্ট।  বয়স সবোর্চ্চ ১২ বছরের বাচ্চাদের জন"
+        },
+        {
+        id: 12,
+        code: "P-112",
+        name: "",
+        price: 250,
+        discount: 5,
+        freeDelivery: false,
+        category: "Accessories",
+        images: ["s012.jpg", "u012.jpg", "b012.jpg"],
+        image: "rwein12.jpg",
+        description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+        id: 13,
+        code: "P-113",
+        name: "নতুন হুডি-শার্ট (Hooded Shirt)",
+        price: 360,
+        discount: 0,
+        freeDelivery: false,
+        category: "Kids",
+        images: ["s013.jpg", "u013.jpg", "b013.jpg"],
+        image: "rwein13.jpg",
+        description: "আপনার বাচ্চার উইন্টার স্টাইলকে আরও আকর্ষণীয় করতেRwein.Store নিয়ে এসেছে প্রিমিয়াম কোয়ালিটির স্টাইলিশ হুডেড শার্ট।  বয়স সবোর্চ্চ ১২ বছরের বাচ্চাদের জন"
+        },
+        {
+        id: 14,
+        code: "P-114",
+        name: "Unicorn LED Lamp",
+        price: 100,
+        discount: 1,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s014.jpg", "u014.jpg", "b014.jpg"],
+        image: "rwein14.jpg",
+        description: "Cute decorative night light lamp for rooms."
+        },
+        {
+        id: 15,
+        code: "P-115",
+        name: "Pure Cotton Fabric Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s015.jpg","u015.jpg","b015.jpg"],
+        image: "rwein15.jpg",
+        description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+        id: 16,
+        code: "P-116",
+        name: "Wide Strap Goddy",
+        price: 99,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s016.jpg","u016.jpg","b016.jpg"],
+        image: "rwein16.jpg",
+        description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+        id: 17,
+        code: "P-117",
+        name: "Indian Copy Stitch Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s017.jpg","u017.jpg","b017.jpg"],
+        image: "rwein17.jpg",
+        description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+        id: 18,
+        code: "P-118",
+        name: "Women's Handbag",
+        price: 950,
+        discount: 10,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s018.jpg", "u018.jpg", "b018.jpg"],
+        image: "rwein18.jpg",
+        description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+        id: 19,
+        code: "P-119",
+        name: "Smart Watch Strap",
+        price: 250,
+        discount: 5,
+        freeDelivery: false,
+        category: "Accessories",
+        images: ["s019.jpg", "u019.jpg", "b019.jpg"],
+        image: "rwein19.jpg",
+        description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+        id: 20,
+        code: "P-120",
+        name: "Unicorn LED Lamp",
+        price: 600,
+        discount: 100,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s020.jpg", "u020.jpg", "b020.jpg"],
+        image: "rwein20.jpg",
+        description: "Cute decorative night light lamp for rooms."
+        },
+        {
+        id: 21,
+        code: "P-121",
+        name: "Unicorn LED Lamp",
+        price: 100,
+        discount: 1,
+        freeDelivery: false,
+        category: "Another",
+        images: ["a021.jpg", "u021.jpg", "b021.jpg"],
+        image: "rwein21.jpg",
+        description: "Cute decorative night light lamp for rooms."
+        },
+        {
+        id: 22,
+        code: "P-122",
+        name: "Pure Cotton Fabric Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s022.jpg","u022.jpg","b022.jpg"],
+        image: "rwein22.jpg",
+        description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+        id: 23,
+        code: "P-123",
+        name: "Wide Strap Goddy",
+        price: 99,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s023.jpg","u023.jpg","b023.jpg"],
+        image: "rwein23.jpg",
+        description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
+        },
+        {
+        id: 24,
+        code: "P-124",
+        name: "Indian Copy Stitch Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s024.jpg","u024.jpg","b024.jpg"],
+        image: "rwein24.jpg",
+        description: "সম্পূর্ণ কভারেজ: নিশ্চিত ফিটিং এবং সারাদিনের আরামের জন্য সম্পূর্ণ কভারেজ কাপ।"
+        },
+        {
+        id: 25,
+        code: "P-125",
+        name: "Women's Handbag",
+        price: 950,
+        discount: 10,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s025.jpg", "u025.jpg", "b025.jpg"],
+        image: "rwein25.jpg",
+        description: "Elegant women's handbag with spacious compartments and premium finish."
+        },
+        {
+        id: 26,
+        code: "P-126",
+        name: "Smart Watch Strap",
+        price: 250,
+        discount: 5,
+        freeDelivery: false,
+        category: "Accessories",
+        images: ["s026.jpg", "u026.jpg", "b026.jpg"],
+        image: "rwein5.jpg",
+        description: "Durable silicone replacement strap for smartwatches."
+        },
+        {
+        id: 27,
+        code: "P-127",
+        name: "Unicorn LED Lamp",
+        price: 600,
+        discount: 100,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s027.jpg", "u027.jpg", "b027.jpg"],
+        image: "rwein27.jpg",
+        description: "Cute decorative night light lamp for rooms."
+        },
+        {
+        id: 28,
+        code: "P-128",
+        name: "Unicorn LED Lamp",
+        price: 100,
+        discount: 1,
+        freeDelivery: false,
+        category: "Another",
+        images: ["s028.jpg", "u028.jpg", "b028.jpg"],
+        image: "rwein28.jpg",
+        description: "Cute decorative night light lamp for rooms."
+        },
+        {
+        id: 29,
+        code: "P-129",
+        name: "Pure Cotton Fabric Bra",
+        price: 110,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s029.jpg","u029.jpg","b029.jpg"],
+        image: "rwein29.jpg",
+        description: "Comfort and Quality: The Cotton Fabric You Deserve."
+        },
+        {
+        id: 30,
+        code: "P-130",
+        name: "Wide Strap Goddy",
+        price: 99,
+        discount: 0,
+        freeDelivery: false,
+        category: "Woman",
+        images: ["s030.jpg","u030.jpg","b030.jpg"],
+        image: "rwein30.jpg",
+        description: "বেল্ট ও শোল্ডার স্ট্র্যাপ: অতিরিক্ত স্থায়িত্ব ও কমফোর্টের জন্য এতে ব্যবহার করা হয়েছে চওড়া বা মোটা ফিতা (Wide / Thick Straps) এবং চওড়া সাইড বেল্ট।"
         }
     ];
 
@@ -1342,6 +1770,7 @@
             catAll: "সবগুলো (All)",
             catMan: "পুরুষ (Man)",
             catWoman: "নারী (Woman)",
+            catKids: "কিডস (Kids)",
             catHome: "হোম এন্ড লিভিং",
             catAcc: "এক্সেসরিজ",
             pageViews: "পেজ ভিউ (Page Views)",
@@ -1376,7 +1805,6 @@
             closeBtn: "বন্ধ করুন",
             prev: "পূর্ববর্তী",
             next: "পরবর্তী",
-            bannerTag: "✨ নতুন কালেকশন",
             bannerBtn: "এখনই কিনুন",
             footerAboutText: "আপনার বিশ্বস্ত অনলাইন শপিং গন্তব্য। আমরা দিচ্ছি সাশ্রয়ী মূল্যে প্রিমিয়াম মানের পণ্য।",
             footerQuickLinksTitle: "দ্রুত লিংক",
@@ -1390,6 +1818,7 @@
             catAll: "All Products",
             catMan: "Man",
             catWoman: "Woman",
+            catKids: "Kids",
             catHome: "Home & Living",
             catAcc: "Accessories",
             pageViews: "Page Views",
@@ -1424,7 +1853,6 @@
             closeBtn: "Close",
             prev: "Previous",
             next: "Next",
-            bannerTag: "✨ New Arrival",
             bannerBtn: "Buy Now",
             footerAboutText: "Your trusted online shopping store for high-quality products at affordable prices.",
             footerQuickLinksTitle: "Quick Links",
@@ -1439,6 +1867,7 @@
         updateUIElements();
         applyFilters();
         updateCartUI();
+        renderBanner();
     };
 
     function updateUIElements() {
@@ -1448,6 +1877,7 @@
         document.getElementById('catAll').innerText = lang.catAll;
         document.getElementById('catMan').innerText = lang.catMan;
         document.getElementById('catWoman').innerText = lang.catWoman;
+        document.getElementById('catKids').innerText = lang.catKids;
         document.getElementById('catHome').innerText = lang.catHome;
         document.getElementById('catAcc').innerText = lang.catAcc;
         document.getElementById('lblPageViews').innerText = lang.pageViews;
@@ -1472,7 +1902,6 @@
         document.getElementById('lblClosePopup').innerText = lang.closeBtn;
         document.getElementById('detailNoteInput').placeholder = lang.notePlaceholder;
         document.getElementById('detailAddToCartBtn').innerText = lang.addToCart;
-        document.getElementById('bannerTag').innerText = lang.bannerTag;
         document.getElementById('bannerBtn').innerText = lang.bannerBtn;
 
         document.getElementById('footerAboutText').innerText = lang.footerAboutText;
@@ -1480,6 +1909,59 @@
         document.getElementById('footerContactTitle').innerText = lang.footerContactTitle;
         document.getElementById('footerNewsletterTitle').innerText = lang.footerNewsletterTitle;
         document.getElementById('footerSubText').innerText = lang.footerSubText;
+    }
+
+    // BANNER SLIDER FUNCTIONS (AUTOMATIC SLIDE AFTER 2 SECONDS)
+    function renderBanner() {
+        const item = bannerItems[currentBannerIndex];
+        const bannerContainer = document.getElementById('bannerSlide');
+        
+        bannerContainer.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('${item.image}')`;
+        document.getElementById('bannerImg').src = item.image;
+        document.getElementById('bannerTag').innerText = currentLang === 'bn' ? item.tagBn : item.tag;
+        document.getElementById('bannerTitle').innerText = item.title;
+        document.getElementById('bannerPrice').innerText = `${item.price} BDT`;
+        document.getElementById('bannerOrigPrice').innerText = `${item.origPrice} BDT`;
+        document.getElementById('bannerDiscount').innerText = `-${item.discount}% OFF`;
+        
+        const dotsContainer = document.getElementById('bannerDots');
+        dotsContainer.innerHTML = bannerItems.map((_, i) => `
+            <div class="banner-dot ${i === currentBannerIndex ? 'active' : ''}" onclick="setBannerSlide(${i})"></div>
+        `).join('');
+    }
+
+    window.nextBannerSlide = function() {
+        currentBannerIndex = (currentBannerIndex + 1) % bannerItems.length;
+        renderBanner();
+    };
+
+    window.prevBannerSlide = function() {
+        currentBannerIndex = (currentBannerIndex - 1 + bannerItems.length) % bannerItems.length;
+        renderBanner();
+    };
+
+    window.setBannerSlide = function(index) {
+        currentBannerIndex = index;
+        renderBanner();
+        resetBannerTimer();
+    };
+
+    window.openBannerDetail = function() {
+        const item = bannerItems[currentBannerIndex];
+        if (item && item.productId) {
+            openDetailModal(item.productId);
+        }
+    };
+
+    function startBannerTimer() {
+        bannerInterval = setInterval(() => {
+            nextBannerSlide();
+        }, 3000); // Automatically slides every 3 seconds
+    }
+
+    function resetBannerTimer() {
+        clearInterval(bannerInterval);
+        startBannerTimer();
     }
 
     let currentDetailImages = [];
@@ -1799,7 +2281,6 @@
         setTimeout(() => badge.classList.remove('cart-bump'), 200);
     }
 
-    // COUPON APPLICATION FUNCTION (ROBUST & CASE-INSENSITIVE)
     window.applyCoupon = function () {
         const inputElem = document.getElementById('couponInput');
         const codeInput = inputElem ? inputElem.value.trim().toUpperCase() : '';
@@ -1828,7 +2309,6 @@
         updateCartUI();
     };
 
-    // CART UI UPDATE & CALCULATION FUNCTION
     window.updateCartUI = function () {
         const lang = i18n[currentLang];
         const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -1923,8 +2403,23 @@
         const areaSelect = document.getElementById('deliveryArea');
         const deliveryLocationText = areaSelect.value === 'outside' ? 'Outside Kishorganj (৫০ টাকা)' : 'Inside Kishorganj (২৫ টাকা)';
 
+        // Get exact Date, Time, Minutes, and Seconds
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        const formattedTime = now.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+        const orderTimestamp = `${formattedDate} ${formattedTime}`;
+
         let subtotal = 0;
-        let message = `*NEW ORDER RECEIVED*\n\n*Customer Details:*\n• Name: ${name}\n• Phone: ${phone}\n• Email: ${email}\n• Address: ${address}\n• Delivery Area: ${deliveryLocationText}\n\n*Order Items:*\n`;
+        let message = `*NEW ORDER RECEIVED*\n📅 *Date & Time:* ${orderTimestamp}\n\n*Customer Details:*\n• Name: ${name}\n• Phone: ${phone}\n• Email: ${email}\n• Address: ${address}\n• Delivery Area: ${deliveryLocationText}\n\n*Order Items:*\n`;
 
         cart.forEach((item, index) => {
             const itemTotal = item.finalPrice * item.qty;
@@ -1979,6 +2474,8 @@
     updateUIElements();
     applyFilters();
     trackVisitor();
+    renderBanner();
+    startBannerTimer();
 </script>
 </body>
 </html>
